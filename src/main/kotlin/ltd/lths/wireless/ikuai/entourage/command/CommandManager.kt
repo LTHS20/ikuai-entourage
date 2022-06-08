@@ -38,4 +38,8 @@ object CommandManager {
 
     }
 
+    fun suggest(content: String): String {
+        return ""
+    }
+
 }

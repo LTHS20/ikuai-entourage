@@ -20,33 +20,32 @@ object Entourage {
 
     val logger = LogManager.getLogger(Entourage::class.java)
 
+    var running = false
+        private set
 
     @Awake(LifeCycle.ENABLE)
     fun onEnable() {
-        val rootLogger = LogManager.getRootLogger() as Logger
-        for (appender in rootLogger.appenders.values) {
-            // Remove the appender that is not in use
-            // Prevents multiple appenders/double logging and removes harmless errors
-            if (appender is ConsoleAppender) {
-                rootLogger.removeAppender(appender)
-            }
-        }
-        val thread = object : Thread("console handler") {
+        running = true
+        object : Thread("console handler") {
             override fun run() {
                 EntourageConsole.start()
             }
+        }.run {
+            isDaemon = true
+            start()
         }
-        thread.isDaemon = true
 
-        thread.start()
-        submit {
-            initServer()
-        }
+        logger.info("正在初始化...")
+
+        Runtime.getRuntime().addShutdownHook(Thread {
+            onDisable()
+        })
+
     }
 
-    fun initServer() {
-        println("正常输出")
-        logger.info("§b测试文字")
+    fun onDisable() {
+        running = false
+        logger.info("停止")
     }
 
 }

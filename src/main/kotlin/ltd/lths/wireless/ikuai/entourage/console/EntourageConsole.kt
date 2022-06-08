@@ -1,6 +1,9 @@
 package ltd.lths.wireless.ikuai.entourage.console
 
+import ltd.lths.wireless.ikuai.entourage.Entourage
 import net.minecrell.terminalconsole.SimpleTerminalConsole
+import org.apache.logging.log4j.LogManager
+import java.io.PrintStream
 
 /**
  * ikuai-entourage
@@ -11,7 +14,7 @@ import net.minecrell.terminalconsole.SimpleTerminalConsole
  */
 object EntourageConsole : SimpleTerminalConsole() {
     override fun isRunning(): Boolean {
-        return true
+        return Entourage.running
     }
 
     override fun runCommand(command: String?) {
@@ -19,6 +22,6 @@ object EntourageConsole : SimpleTerminalConsole() {
     }
 
     override fun shutdown() {
-
+        Entourage.onDisable()
     }
 }
