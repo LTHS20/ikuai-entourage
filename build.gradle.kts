@@ -17,11 +17,11 @@ taboolib {
     install(
         "common",
         "common-5",
-//        "module-configuration",
+        "module-configuration",
         "platform-application",
     )
     classifier = null
-    version = "6.0.8-9"
+    version = "6.0.7-56"
 }
 
 dependencies {

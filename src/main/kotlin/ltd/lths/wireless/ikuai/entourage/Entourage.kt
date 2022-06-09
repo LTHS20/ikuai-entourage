@@ -8,6 +8,8 @@ import org.apache.logging.log4j.core.appender.ConsoleAppender
 import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
 import taboolib.common.platform.function.submit
+import taboolib.module.configuration.Config
+import taboolib.module.configuration.Configuration
 
 /**
  * iKuai-multiwan-tasks
@@ -19,6 +21,9 @@ import taboolib.common.platform.function.submit
 object Entourage {
 
     val logger = LogManager.getLogger(Entourage::class.java)
+
+    @Config
+    lateinit var config: Configuration
 
     var running = false
         private set

@@ -1,0 +1,5 @@
+options:
+  http-client:
+    connection-request-timeout: 500
+    connect-timeout: 500
+    socket-timeout: 500

@@ -1,5 +1,9 @@
 package ltd.lths.wireless.ikuai.ac.network.interfaces.wan.mix
 
+import com.google.gson.JsonObject
+import ltd.lths.wireless.ikuai.ac.network.interfaces.wan.DynamicWan
+import ltd.lths.wireless.ikuai.ac.network.interfaces.wan.Wan
+
 /**
  * ikuai-entourage
  * ltd.lths.wireless.ikuai.ac.network.interfaces.wan.mix.MixDenamicWan
@@ -7,5 +11,5 @@ package ltd.lths.wireless.ikuai.ac.network.interfaces.wan.mix
  * @author Score2
  * @since 2022/06/08 20:38
  */
-class MixDynamicWan {
+class MixDynamicWan(json: JsonObject) : DynamicWan(json) {
 }

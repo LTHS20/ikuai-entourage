@@ -1,5 +1,6 @@
 package ltd.lths.wireless.ikuai.ac.network.interfaces.wan.mix
 
+import com.google.gson.JsonObject
 import ltd.lths.wireless.ikuai.ac.IkuaiAC
 import ltd.lths.wireless.ikuai.ac.network.interfaces.wan.AdslWan
 
@@ -11,10 +12,15 @@ import ltd.lths.wireless.ikuai.ac.network.interfaces.wan.AdslWan
  * @since 2022/06/08 20:39
  */
 class MixAdslWan(
-    ac: IkuaiAC,
-    val vlanId: Int,
-    val name: String,
-    account: String,
-    password: String
-) : AdslWan(ac, account, password) {
+    json: JsonObject
+) : AdslWan(json) {
+
+    var vlanId: Int
+        get() = json.get("vlan_id").asInt
+        set(value) = json.addProperty("vlan_id", value)
+
+    var vlanName: String
+        get() = json.get("vlan_name").asString
+        set(value) = json.addProperty("vlan_name", value)
+
 }
