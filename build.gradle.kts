@@ -26,6 +26,7 @@ taboolib {
 
 dependencies {
     kotlin("stable")
+    testImplementation(kotlin("reflect"))
 
     taboo("commons-io:commons-io:2.11.0")
     taboo("org.apache.commons:commons-lang3:3.12.0")
