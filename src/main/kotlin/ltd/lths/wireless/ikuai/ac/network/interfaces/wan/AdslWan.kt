@@ -15,9 +15,7 @@ import ltd.lths.wireless.ikuai.entourage.util.Persistent
  * @author Score2
  * @since 2022/06/08 18:17
  */
-open class AdslWan(
-    json: JsonObject
-): Wan(json) {
+open class AdslWan(id: Int, ac: IkuaiAC): Wan(id, ac) {
 
     var isEnabled: Boolean
         get() = json.get("enabled").asWrittenBool
