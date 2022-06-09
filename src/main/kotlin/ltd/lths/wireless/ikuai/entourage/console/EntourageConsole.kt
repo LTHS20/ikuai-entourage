@@ -7,6 +7,7 @@ import net.minecrell.terminalconsole.SimpleTerminalConsole
 import org.apache.logging.log4j.LogManager
 import org.jline.reader.LineReader
 import org.jline.reader.LineReaderBuilder
+import taboolib.common.TabooLibCommon
 import taboolib.common.platform.ProxyCommandSender
 import java.io.PrintStream
 

@@ -6,10 +6,12 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.core.Logger
 import org.apache.logging.log4j.core.appender.ConsoleAppender
 import taboolib.common.LifeCycle
+import taboolib.common.TabooLibCommon
 import taboolib.common.platform.Awake
 import taboolib.common.platform.function.submit
 import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
+import kotlin.system.exitProcess
 
 /**
  * iKuai-multiwan-tasks
@@ -46,11 +48,13 @@ object Entourage {
             onDisable()
         })
 
+        logger.info("载入完成! 输入 ? 或 help 查看帮助.")
     }
 
     fun onDisable() {
         running = false
         logger.info("停止")
+        TabooLibCommon.testCancel()
     }
 
 }
