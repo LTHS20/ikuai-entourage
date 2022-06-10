@@ -1,8 +1,8 @@
 package ltd.lths.wireless.ikuai.ac.network.interfaces
 
-import com.google.gson.JsonObject
 import ltd.lths.wireless.ikuai.ac.IkuaiAC
 import ltd.lths.wireless.ikuai.ac.network.interfaces.wan.Wan
+import ltd.lths.wireless.ikuai.entourage.util.ActionProp
 
 /**
  * ikuai-entourage
@@ -13,15 +13,7 @@ import ltd.lths.wireless.ikuai.ac.network.interfaces.wan.Wan
  */
 class LanWanSettings(val ac: IkuaiAC) {
 
-    val json get() = ac.postJson(JsonObject().run {
-        addProperty("func_name", "homepage")
-        addProperty("action", "show")
-        add("param", JsonObject().run {
-            addProperty("TYPE", "ether_info,snapshoot")
-            this
-        })
-        this
-    })
+    val json get() = ActionProp.actionShowEtherInfo(ac).postJson(ac)
 
     val ethernets get() =
         json.getAsJsonObject("Data").getAsJsonObject("ether_info").let { infos ->

@@ -26,7 +26,6 @@ taboolib {
 
 dependencies {
     kotlin("stable")
-    testImplementation(kotlin("reflect"))
 
     taboo("commons-io:commons-io:2.11.0")
     taboo("org.apache.commons:commons-lang3:3.12.0")
@@ -43,6 +42,7 @@ dependencies {
     taboo("org.jline:jline-terminal-jansi:3.21.0")
 
     taboo("net.sf.jopt-simple:jopt-simple:5.0.4")
+
 }
 
 tasks.withType<JavaCompile> {

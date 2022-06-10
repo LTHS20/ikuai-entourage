@@ -1,8 +1,7 @@
 package ltd.lths.wireless.ikuai.entourage.test
 
+import ltd.lths.wireless.ikuai.ac.IkuaiAC
 import ltd.lths.wireless.ikuai.entourage.api.losslessUpdate
-import ltd.lths.wireless.ikuai.entourage.util.reload
-import ltd.lths.wireless.ikuai.entourage.util.reloadable
 
 
 /**

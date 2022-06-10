@@ -17,6 +17,7 @@ import java.util.Arrays;
 public class Main {
 
     public static void main(String[] args) {
+        OptionSet options = null;
         try {
             OptionParser parser = new OptionParser() {
                 {
@@ -24,7 +25,7 @@ public class Main {
                     acceptsAll(Arrays.asList("test"), "随意调试");
                 }
             };
-            OptionSet options = parser.parse(args);
+            options = parser.parse(args);
 
             if (options.has("?")) {
                 parser.printHelpOn(System.out);
@@ -34,5 +35,7 @@ public class Main {
 
         }
         TabooLibCommon.testSetup();
+        OptionSet finalOptions = options;
+        new Thread(() -> Entourage.INSTANCE.main(finalOptions)).start();
     }
 }

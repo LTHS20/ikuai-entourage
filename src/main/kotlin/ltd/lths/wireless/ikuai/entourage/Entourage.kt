@@ -1,17 +1,13 @@
 package ltd.lths.wireless.ikuai.entourage
 
+import com.google.gson.JsonObject
+import joptsimple.OptionSet
+import ltd.lths.wireless.ikuai.ac.IkuaiAC
 import ltd.lths.wireless.ikuai.entourage.console.EntourageConsole
-import net.minecrell.terminalconsole.TerminalConsoleAppender
 import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.core.Logger
-import org.apache.logging.log4j.core.appender.ConsoleAppender
-import taboolib.common.LifeCycle
 import taboolib.common.TabooLibCommon
-import taboolib.common.platform.Awake
-import taboolib.common.platform.function.submit
 import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
-import kotlin.system.exitProcess
 
 /**
  * iKuai-multiwan-tasks
@@ -30,8 +26,13 @@ object Entourage {
     var running = false
         private set
 
-    @Awake(LifeCycle.ENABLE)
-    fun onEnable() {
+    fun main(options: OptionSet?) {
+        if (options != null) when {
+            options.has("test") -> {
+                test()
+                return
+            }
+        }
         running = true
         object : Thread("console handler") {
             override fun run() {
@@ -55,6 +56,24 @@ object Entourage {
         running = false
         logger.info("停止")
         TabooLibCommon.testCancel()
+    }
+
+    fun test() {
+        val ac = IkuaiAC("172.18.0.1", "test", "lthstester123")
+        logger.info(ac.postJson(JsonObject().run {
+            addProperty("func_name", "wan")
+            addProperty("action", "show")
+            add("param", JsonObject().run {
+                addProperty("ORDER", "desc")
+                addProperty("ORDER_BY", "id")
+                addProperty("TYPE", "vlan_data,vlan_total")
+                addProperty("interface", "wan1")
+                addProperty("limit", "0,20")
+                addProperty("vlan_internet", 0)
+                this
+            })
+            this
+        }))
     }
 
 }

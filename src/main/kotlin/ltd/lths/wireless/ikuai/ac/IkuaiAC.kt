@@ -5,6 +5,7 @@ import com.google.gson.JsonParser
 import ltd.lths.wireless.ikuai.entourage.Entourage.config
 import ltd.lths.wireless.ikuai.entourage.api.base64
 import ltd.lths.wireless.ikuai.entourage.api.md5
+import ltd.lths.wireless.ikuai.entourage.util.ActionProp
 import org.apache.http.HttpEntity
 import org.apache.http.HttpResponse
 import org.apache.http.client.config.CookieSpecs
@@ -23,17 +24,28 @@ import java.net.InetAddress
  * @since 2022/06/08 17:27
  */
 class IkuaiAC(
-    val host: InetAddress,
+    val ip: String,
     val username: String,
     val password: String,
     port: Int? = null,
     useSSL: Boolean = false,
 ) {
+
+    constructor(
+        host: InetAddress,
+        username: String,
+        password: String,
+        port: Int? = null,
+        useSSL: Boolean = false
+    ) : this(
+        host.hostAddress, username, password, port, useSSL
+    )
+
     val httpType = if (useSSL) "https" else "http"
     val port = port ?: if (useSSL) 443 else 80
 
     fun index(index: String): String {
-        return "$httpType://${host.hostAddress}:$port/$index"
+        return "$httpType://$ip:$port/$index"
     }
 
     val client get() = HttpClients.custom()
@@ -51,7 +63,7 @@ class IkuaiAC(
         private set
         get() {
             val logged = let {
-                if (cookie.isBlank()) {
+                if (field.isBlank()) {
                     return@let false
                 }
                 val json = JsonParser.parseString(postString())
@@ -81,14 +93,26 @@ class IkuaiAC(
 
 
 
+    fun post(entity: ActionProp) =
+        post(PostAction.CALL, StringEntity(entity.toString(), Charsets.UTF_8))
+
+    fun post(entity: JsonObject) =
+        post(PostAction.CALL, StringEntity(entity.toString(), Charsets.UTF_8))
+
     fun post(entity: String) =
         post(PostAction.CALL, StringEntity(entity, Charsets.UTF_8))
 
-    fun post(action: PostAction, entity: String) =
-        post(action, StringEntity(entity, Charsets.UTF_8))
-
     fun post(entity: HttpEntity? = null) =
         post(PostAction.CALL, entity)
+
+    fun post(action: PostAction, entity: ActionProp) =
+        post(action, StringEntity(entity.toString(), Charsets.UTF_8))
+
+    fun post(action: PostAction, entity: JsonObject) =
+        post(action, StringEntity(entity.toString(), Charsets.UTF_8))
+
+    fun post(action: PostAction, entity: String) =
+        post(action, StringEntity(entity, Charsets.UTF_8))
 
     fun post(action: PostAction, entity: HttpEntity? = null): HttpResponse {
         val post = HttpPost(index("Action/${action.name.lowercase()}"))
@@ -100,43 +124,62 @@ class IkuaiAC(
         return client.execute(post)
     }
 
-    fun postString(entity: JsonObject) =
-        postString(PostAction.CALL, entity)
 
-    fun postString(action: PostAction, entity: JsonObject) =
-        postString(action, entity.toString())
+    fun postString(entity: ActionProp) =
+        postString(entity.toString())
+
+    fun postString(entity: JsonObject) =
+        postString(entity.toString())
 
     fun postString(entity: String) =
         postString(PostAction.CALL, entity)
 
-    fun postString(action: PostAction, entity: String) =
-        postString(action, StringEntity(entity, Charsets.UTF_8))
-
     fun postString(entity: HttpEntity? = null) =
         postString(PostAction.CALL, entity)
+
+    fun postString(action: PostAction, entity: ActionProp) =
+        postString(action, entity.toString())
+
+    fun postString(action: PostAction, entity: JsonObject) =
+        postString(action, entity.toString())
+
+    fun postString(action: PostAction, entity: String) =
+        postString(action, StringEntity(entity, Charsets.UTF_8))
 
     fun postString(action: PostAction, entity: HttpEntity? = null): String =
         EntityUtils.toString(post(action, entity).entity)
 
 
-    fun postJson(entity: JsonObject) =
-        postJson(PostAction.CALL, entity)
+    fun postJson(entity: ActionProp) =
+        postJson(entity.toJson())
 
-    fun postJson(action: PostAction, entity: JsonObject) =
-        postJson(action, entity.toString())
+    fun postJson(entity: JsonObject) =
+        postJson(entity.toString())
 
     fun postJson(entity: String) =
         postJson(PostAction.CALL, entity)
 
-    fun postJson(action: PostAction, entity: String) =
-        postJson(action, StringEntity(entity, Charsets.UTF_8))
-
     fun postJson(entity: HttpEntity? = null) =
         postJson(PostAction.CALL, entity)
+
+    fun postJson(action: PostAction, entity: ActionProp) =
+        postJson(action, entity.toString())
+
+    fun postJson(action: PostAction, entity: JsonObject) =
+        postJson(action, entity.toString())
+
+    fun postJson(action: PostAction, entity: String) =
+        postJson(action, StringEntity(entity, Charsets.UTF_8))
 
     fun postJson(action: PostAction, entity: HttpEntity? = null): JsonObject =
         JsonParser.parseString(postString(action, entity)).asJsonObject
 
+
+    fun prop(funcName: String, action: String, vararg param: Pair<String, Any>) =
+        ActionProp(funcName, action, *param)
+
+    fun prop(funcName: String, action: String, param: JsonObject) =
+        ActionProp(funcName, action, param)
 
     enum class PostAction {
         LOGIN,
