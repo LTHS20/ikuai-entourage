@@ -2,6 +2,7 @@ package ltd.lths.wireless.ikuai.entourage.util
 
 import com.google.gson.JsonObject
 import ltd.lths.wireless.ikuai.ac.IkuaiAC
+import ltd.lths.wireless.ikuai.ac.network.interfaces.lan.Lan
 import ltd.lths.wireless.ikuai.ac.network.interfaces.wan.Wan
 import ltd.lths.wireless.ikuai.ac.network.interfaces.wan.mix.MixIndividualWan
 
@@ -51,11 +52,19 @@ class ActionProp(val funcName: String, val action: String, val param: JsonObject
 
     companion object {
 
-        fun actionWanShow(ac: IkuaiAC, wan: Wan) = ac.prop(
+        fun actionWanShow(ac: IkuaiAC, wanId: Int) = ac.prop(
             "wan",
             "show",
 
-            "id" to "${wan.wanId}",
+            "id" to wanId,
+            "TYPE" to "support_wisp,total,data"
+        )
+
+        fun actionLanShow(ac: IkuaiAC, lanId: Int) = ac.prop(
+            "lan",
+            "show",
+
+            "id" to lanId,
             "TYPE" to "support_wisp,total,data"
         )
 

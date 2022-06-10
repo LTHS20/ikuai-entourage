@@ -16,21 +16,24 @@ import ltd.lths.wireless.ikuai.entourage.util.ActionProp
  */
 abstract class Wan(val wanId: Int, val ac: IkuaiAC) {
 
-    open val json get() = ActionProp.actionWanShow(ac, this).postJson(ac)
-
-    var isEnabled: Boolean
-        get() = json.get("enabled").asWrittenBool
-        set(value) = json.addProperty("enabled", value.asWrittenString)
+    open val json get() = ActionProp.actionWanShow(ac, wanId).postJson(ac)
 
     var isDefaultGateway: Boolean
         get() = json.get("default_route").asNumBool
         set(value) = json.addProperty("default_route", value.asNumSign)
 
+    val ethernets get() = ac.lanWanSettings.ethernets.filter { it.`interface` == "wan$wanId" }
+
     enum class Type(val internet: Int) {
-        STATIC(1),
-        DYNAMIC(2),
-        ADSL(3),
-        MIX(4),
-        VLAN_MIX(5),
+        STATIC(0),
+        DYNAMIC(1),
+        ADSL(2),
+        MIX(3),
+        VLAN_MIX(4),
+        ;
+        companion object {
+            fun find(internet: Int) =
+                values().find { it.internet == internet }!!
+        }
     }
 }

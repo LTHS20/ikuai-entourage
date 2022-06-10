@@ -2,6 +2,7 @@ package ltd.lths.wireless.ikuai.ac
 
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import ltd.lths.wireless.ikuai.ac.network.interfaces.LanWanSettings
 import ltd.lths.wireless.ikuai.entourage.Entourage.config
 import ltd.lths.wireless.ikuai.entourage.api.base64
 import ltd.lths.wireless.ikuai.entourage.api.md5
@@ -66,7 +67,14 @@ class IkuaiAC(
                 if (field.isBlank()) {
                     return@let false
                 }
-                val json = JsonParser.parseString(postString())
+                // 不能省略这一步, 否则会递归
+                val post = HttpPost(index("Action/call"))
+                post.setHeader("Cookie", "username=$username; login=1; sess_key=$field")
+                post.setHeader("Content-Type", "application/json;charset=UTF-8")
+
+                val response = client.execute(post)
+
+                val json = JsonParser.parseString(EntityUtils.toString(response.entity))
                 val jsonObject = json.asJsonObject
 
                 val result = jsonObject.get("Result").asInt
@@ -90,7 +98,7 @@ class IkuaiAC(
         }
 
 
-
+    val lanWanSettings = LanWanSettings(this)
 
 
     fun post(entity: ActionProp) =

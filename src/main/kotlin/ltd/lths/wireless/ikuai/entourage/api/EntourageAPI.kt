@@ -1,6 +1,8 @@
 package ltd.lths.wireless.ikuai.entourage.api
 
 import com.google.gson.JsonElement
+import ltd.lths.wireless.ikuai.entourage.Entourage
+import ltd.lths.wireless.ikuai.entourage.Entourage.logger
 import java.security.MessageDigest
 import java.util.*
 
@@ -76,3 +78,5 @@ val JsonElement.asNumBool get() = asInt == 1
 
 val Boolean.asWrittenString get() = if (this) "yes" else "no"
 val Boolean.asNumSign get() = if (this) 1 else 2
+
+fun <T> T.println() = logger.info(this)

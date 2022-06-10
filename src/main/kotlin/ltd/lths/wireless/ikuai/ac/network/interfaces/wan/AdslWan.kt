@@ -20,4 +20,7 @@ interface AdslWan {
     var password: String
         get() = json.get("passwd").asString
         set(value) = json.addProperty("passwd", value)
+
+    val ip: String
+        get() = json.get("pppoe_ip_addr").asString
 }

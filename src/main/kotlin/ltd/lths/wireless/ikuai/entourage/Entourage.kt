@@ -3,7 +3,10 @@ package ltd.lths.wireless.ikuai.entourage
 import com.google.gson.JsonObject
 import joptsimple.OptionSet
 import ltd.lths.wireless.ikuai.ac.IkuaiAC
+import ltd.lths.wireless.ikuai.ac.network.interfaces.wan.MixWan
+import ltd.lths.wireless.ikuai.entourage.api.println
 import ltd.lths.wireless.ikuai.entourage.console.EntourageConsole
+import ltd.lths.wireless.ikuai.entourage.util.ActionProp
 import org.apache.logging.log4j.LogManager
 import taboolib.common.TabooLibCommon
 import taboolib.module.configuration.Config
@@ -59,21 +62,15 @@ object Entourage {
     }
 
     fun test() {
+        logger.info("开始调试")
         val ac = IkuaiAC("172.18.0.1", "test", "lthstester123")
-        logger.info(ac.postJson(JsonObject().run {
-            addProperty("func_name", "wan")
-            addProperty("action", "show")
-            add("param", JsonObject().run {
-                addProperty("ORDER", "desc")
-                addProperty("ORDER_BY", "id")
-                addProperty("TYPE", "vlan_data,vlan_total")
-                addProperty("interface", "wan1")
-                addProperty("limit", "0,20")
-                addProperty("vlan_internet", 0)
-                this
-            })
-            this
-        }))
+
+        ac.lanWanSettings.getWan(1, MixWan::class.java).AdslWans.forEach {
+            "${it.vlanId}:${it.vlanName}:${it.ip}:${it.username}:${it.password}".println()
+        }
+
+        logger.info("结束调试")
+        onDisable()
     }
 
 }

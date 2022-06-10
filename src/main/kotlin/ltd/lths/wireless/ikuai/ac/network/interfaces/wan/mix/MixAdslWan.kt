@@ -17,5 +17,4 @@ class MixAdslWan(
     override var json: JsonObject
 ) : MixIndividualWan, AdslWan {
 
-
 }
