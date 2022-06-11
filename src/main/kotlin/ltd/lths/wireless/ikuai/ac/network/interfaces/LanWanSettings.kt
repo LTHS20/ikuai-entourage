@@ -4,6 +4,7 @@ import ltd.lths.wireless.ikuai.ac.IkuaiAC
 import ltd.lths.wireless.ikuai.ac.network.interfaces.lan.Lan
 import ltd.lths.wireless.ikuai.ac.network.interfaces.wan.*
 import ltd.lths.wireless.ikuai.ac.network.interfaces.wan.Wan.Type.*
+import ltd.lths.wireless.ikuai.entourage.api.println
 import ltd.lths.wireless.ikuai.entourage.util.ActionProp
 
 /**
@@ -20,7 +21,7 @@ class LanWanSettings(val ac: IkuaiAC) {
     val ethernets get() =
         json.getAsJsonObject("Data").getAsJsonObject("ether_info").let { infos ->
             infos.keySet().map {
-                Ethernet(ac, it.substringAfter("eth").toInt(), infos.getAsJsonObject(it))
+                Ethernet(ac, it, infos.getAsJsonObject(it))
             }
         }
 

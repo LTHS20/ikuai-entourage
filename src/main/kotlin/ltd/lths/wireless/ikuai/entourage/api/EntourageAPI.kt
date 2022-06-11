@@ -28,7 +28,7 @@ fun <T> MutableList<T>.losslessUpdate(
     accord: (T, T) -> Boolean = { t, t1 -> t == t1 },
     adding: (T) -> Boolean = { true },
     removing: (T) -> Boolean = { true },
-    keepers: ((T, T) -> Unit)? = null
+    keepers: ((T, T) -> Boolean)? = null
 ): MutableList<T> {
     val addList = newList.filter { t1 -> !this.any { t2 -> accord(t1, t2) } }.mapNotNull { t ->
         return@mapNotNull if (adding(t)) t else null
@@ -46,7 +46,9 @@ fun <T> MutableList<T>.losslessUpdate(
     val oriKeepers = filter { !addList.contains(it) && !removeList.contains(it) }
     val newKeepers = newList.filter { !addList.contains(it) && !removeList.contains(it) }
     for (i in oriKeepers.indices) {
-        keepers(oriKeepers[i], newKeepers[i])
+        if (!keepers(oriKeepers[i], newKeepers[i])) {
+            remove(oriKeepers[i])
+        }
     }
 
     return this

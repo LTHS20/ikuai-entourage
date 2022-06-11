@@ -18,4 +18,13 @@ data class Command(
     val completer: CommandCompleter,
     val commandBuilder: CommandBuilder.CommandBase.() -> Unit
 ) {
+
+    val aliases get() = listOf(command.name, *command.aliases.toTypedArray())
+
+    fun register() =
+        CommandManager.register(this)
+
+    fun unregister() =
+        CommandManager.unregister(this)
+
 }

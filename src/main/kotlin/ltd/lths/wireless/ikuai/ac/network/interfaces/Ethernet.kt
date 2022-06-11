@@ -14,11 +14,11 @@ import ltd.lths.wireless.ikuai.entourage.api.asNumSign
  */
 data class Ethernet(
     val ac: IkuaiAC,
-    val id: Int,
+    val name: String,
     var json: JsonObject
 ) {
 
-    val name = "eth$id"
+    val id = name.substringAfter("eth").toIntOrNull() ?: 0
 
     val driver: String
         get() = json.get("driver").asString

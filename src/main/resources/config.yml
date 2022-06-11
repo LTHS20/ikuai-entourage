@@ -3,3 +3,10 @@ options:
     connection-request-timeout: 500
     connect-timeout: 500
     socket-timeout: 500
+
+ikuai-ac:
+  test:
+    host: '172.18.0.1'
+    username: test
+    password: lthstester123
+    use-ssl: false

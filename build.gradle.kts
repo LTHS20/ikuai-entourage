@@ -1,11 +1,10 @@
+val taboolibVersion: String by project
+
 plugins {
     java
     kotlin("jvm") version "1.6.10"
     id("io.izzel.taboolib") version "1.40"
 }
-
-group = "ltd.lths.wireless.ikuai.entourage"
-version = "1.0.0"
 
 repositories {
     mavenLocal()
@@ -20,12 +19,18 @@ taboolib {
         "module-configuration",
         "platform-application",
     )
+    options(
+        "skip-minimize",
+        "keep-kotlin-module",
+        "skip-kotlin-relocate",
+        "skip-taboolib-relocate",
+    )
     classifier = null
-    version = "6.0.7-56"
+    version = taboolibVersion
 }
 
 dependencies {
-    kotlin("stable")
+    taboo(kotlin("stdlib"))
 
     taboo("commons-io:commons-io:2.11.0")
     taboo("org.apache.commons:commons-lang3:3.12.0")
@@ -45,18 +50,13 @@ dependencies {
 
 }
 
-tasks.withType<JavaCompile> {
-    options.encoding = "UTF-8"
-}
-
-configure<JavaPluginExtension> {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
-
 tasks.withType<Jar> {
     exclude("META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat")
     manifest {
         attributes["Main-Class"] = "${rootProject.group}.Main"
     }
+}
+
+tasks.withType<JavaCompile> {
+    options.encoding = "UTF-8"
 }

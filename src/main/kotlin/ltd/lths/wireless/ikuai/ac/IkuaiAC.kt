@@ -15,6 +15,7 @@ import org.apache.http.client.methods.HttpPost
 import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.HttpClients
 import org.apache.http.util.EntityUtils
+import taboolib.library.configuration.ConfigurationSection
 import java.net.InetAddress
 
 /**
@@ -25,25 +26,43 @@ import java.net.InetAddress
  * @since 2022/06/08 17:27
  */
 class IkuaiAC(
-    val ip: String,
-    val username: String,
-    val password: String,
+    val name: String,
+    var ip: String,
+    var username: String,
+    var password: String,
     port: Int? = null,
     useSSL: Boolean = false,
 ) {
 
     constructor(
+        name: String,
         host: InetAddress,
         username: String,
         password: String,
         port: Int? = null,
         useSSL: Boolean = false
     ) : this(
-        host.hostAddress, username, password, port, useSSL
+        name, host.hostAddress, username, password, port, useSSL
     )
 
-    val httpType = if (useSSL) "https" else "http"
-    val port = port ?: if (useSSL) 443 else 80
+    constructor(
+        name: String,
+        section: ConfigurationSection
+    ) : this(
+        name,
+        section.getString("host")!!.substringBeforeLast(":"),
+        section.getString("username", "admin")!!,
+        section.getString("password", "admin")!!,
+        if (section.getString("host")!!.contains(":"))
+            section.getString("host")!!.substringAfterLast(":").toInt()
+        else if (section.contains("port"))
+            section.getInt("port", 80)
+        else 80,
+        section.getBoolean("use-ssl")
+    )
+
+    var httpType = if (useSSL) "https" else "http"
+    var port = port ?: if (useSSL) 443 else 80
 
     fun index(index: String): String {
         return "$httpType://$ip:$port/$index"
@@ -91,6 +110,10 @@ class IkuaiAC(
                     it.addProperty("remember_password", "true")
                     it.addProperty("username", username)
                 }.toString())
+
+                if (JsonParser.parseString(EntityUtils.toString(response.entity)).asJsonObject.get("Result").asInt == 10001) {
+                    return "password"
+                }
 
                 return response.getLastHeader("Set-Cookie").value.substringBefore(";").removePrefix("sess_key=").also { field = it }
             }

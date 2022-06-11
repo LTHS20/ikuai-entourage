@@ -32,6 +32,7 @@ class MixWan(wanId: Int, ac: IkuaiAC) : Wan(wanId, ac) {
                 },
                 keepers = { t, t1 ->
                     t.json = t1.json
+                    true
                 }
             )
             return field
@@ -46,6 +47,7 @@ class MixWan(wanId: Int, ac: IkuaiAC) : Wan(wanId, ac) {
                 },
                 keepers = { t, t1 ->
                     t.json = t1.json
+                    true
                 }
             )
         }
@@ -61,6 +63,7 @@ class MixWan(wanId: Int, ac: IkuaiAC) : Wan(wanId, ac) {
                 },
                 keepers = { t, t1 ->
                     t.json = t1.json
+                    true
                 }
             )
             return field
@@ -75,6 +78,7 @@ class MixWan(wanId: Int, ac: IkuaiAC) : Wan(wanId, ac) {
                 },
                 keepers = { t, t1 ->
                     t.json = t1.json
+                    true
                 }
             )
         }
@@ -90,6 +94,7 @@ class MixWan(wanId: Int, ac: IkuaiAC) : Wan(wanId, ac) {
                 },
                 keepers = { t, t1 ->
                     t.json = t1.json
+                    true
                 }
             )
             return field
@@ -104,6 +109,7 @@ class MixWan(wanId: Int, ac: IkuaiAC) : Wan(wanId, ac) {
                 },
                 keepers = { t, t1 ->
                     t.json = t1.json
+                    true
                 }
             )
         }

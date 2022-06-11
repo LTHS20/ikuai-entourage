@@ -5,6 +5,7 @@ import ltd.lths.wireless.ikuai.entourage.Entourage.logger
 import ltd.lths.wireless.ikuai.entourage.command.CommandManager
 import net.minecrell.terminalconsole.SimpleTerminalConsole
 import org.apache.logging.log4j.LogManager
+import org.jline.reader.Candidate
 import org.jline.reader.LineReader
 import org.jline.reader.LineReaderBuilder
 import taboolib.common.TabooLibCommon
@@ -24,9 +25,16 @@ object EntourageConsole : SimpleTerminalConsole(), ProxyCommandSender {
     }
 
     override fun buildReader(builder: LineReaderBuilder): LineReader {
-        builder.completer { reader, line, candidates ->
-            val buffer = line.line()
-        }
+        builder
+            .appName("iKuai-Entourage")
+            .completer { reader, line, candidates ->
+                val buffer = line.line()
+                CommandManager.suggest(buffer).forEach {
+                    candidates.add(Candidate(it))
+                }
+
+            }
+            .option(LineReader.Option.COMPLETE_IN_WORD, true);
 
         return super.buildReader(builder)
     }

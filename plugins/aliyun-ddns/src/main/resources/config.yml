@@ -1,0 +1,12 @@
+aliyun:
+  access-key-id: 'xxxx'
+  secret: 'xxxx'
+  domain-name: 'xxx.xxx'
+  region-id: 'cn-hangzhou'
+
+# 刷新间隔 秒
+refresh-interval: 60
+
+# 仅对以下名称的 ac 实施刷新
+refresh-ac:
+  - 'test'
