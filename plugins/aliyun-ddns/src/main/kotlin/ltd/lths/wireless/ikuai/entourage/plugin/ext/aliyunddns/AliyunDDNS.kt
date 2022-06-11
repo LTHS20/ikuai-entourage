@@ -49,7 +49,8 @@ object AliyunDDNS : EntouragePlugin("aliyun-ddns") {
     val regionId get() = config.getString("aliyun.region-id", "cn-hangzhou")!!
 
     val refreshInterval get() = config.getLong("refresh-interval", 60)
-    val refreshACs get() = config.getStringList("refresh-ac")
+    val refreshACName get() = config.getString("refresh-ac.name", "test")
+    val refreshACWanId get() = config.getInt("refresh-ac.wan-id", 1)
 
     override fun onEnable() {
         if (arrayOf(accessKeyId, secret, domainName).contains("xxx")) {
@@ -68,33 +69,31 @@ object AliyunDDNS : EntouragePlugin("aliyun-ddns") {
             return
         }
         running = true
-        logger.info("开始刷新, 间隔 $refreshInterval 秒, 将对以下 ac 保持刷新: ${refreshACs.joinToString(", ")}")
+        logger.info("开始刷新, 间隔 $refreshInterval 秒, 将针对 ac $refreshACName 进行刷新")
         submit(async = true, period = refreshInterval * 20) {
-            Entourage.bindACs.filter { refreshACs.contains(it.name) }.forEach { ac ->
-                val iKuaiDomains = ac.lanWanSettings.getWan(1, MixWan::class.java).AdslWans.map { Domain("@", "A", it.ip) }
-                val aliyunDomains = getAliyunRecords().filter { it.rR == "@" }
+            val ac = Entourage.bindACs.find { refreshACName == it.name } ?: return@submit logger.info("§c获取对应绑定 AC $refreshACName 失败.")
+            val iKuaiDomains = ac.lanWanSettings.getWan(1, MixWan::class.java).AdslWans.map { Domain("@", "A", it.ip) }
+            val aliyunDomains = getAliyunRecords().filter { it.rR == "@" }
 
-                aliyunDomains.toMutableList().losslessUpdate(
-                    iKuaiDomains,
-                    accord = { t, t1 ->
-                        t.value == t1.value
-                    },
-                    adding = { t ->
-                        addAliyunRecord(t)
-                        logger.info("已更新 ${t.value} 于 Aliyun")
-                        false
-                    },
-                    removing = { t ->
-                        delAliyunRecord(t)
-                        logger.info("已删除 ${t.value} 于 Aliyun")
-                        false
-                    },
-                    keepers = { _, _ ->
-                        false
-                    }
-                )
-
-            }
+            aliyunDomains.toMutableList().losslessUpdate(
+                iKuaiDomains,
+                accord = { t, t1 ->
+                    t.value == t1.value
+                },
+                adding = { t ->
+                    addAliyunRecord(t)
+                    logger.info("已更新 ${t.value} 于 Aliyun")
+                    false
+                },
+                removing = { t ->
+                    delAliyunRecord(t)
+                    logger.info("已删除 ${t.value} 于 Aliyun")
+                    false
+                },
+                keepers = { _, _ ->
+                    false
+                }
+            )
 
         }
     }
