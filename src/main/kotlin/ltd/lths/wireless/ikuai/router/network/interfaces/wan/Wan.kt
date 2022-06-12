@@ -1,10 +1,8 @@
-package ltd.lths.wireless.ikuai.ac.network.interfaces.wan
+package ltd.lths.wireless.ikuai.router.network.interfaces.wan
 
-import ltd.lths.wireless.ikuai.ac.IkuaiAC
+import ltd.lths.wireless.ikuai.router.IkuaiRouter
 import ltd.lths.wireless.ikuai.entourage.api.asNumBool
 import ltd.lths.wireless.ikuai.entourage.api.asNumSign
-import ltd.lths.wireless.ikuai.entourage.api.asWrittenBool
-import ltd.lths.wireless.ikuai.entourage.api.asWrittenString
 import ltd.lths.wireless.ikuai.entourage.util.ActionProp
 
 /**
@@ -14,15 +12,15 @@ import ltd.lths.wireless.ikuai.entourage.util.ActionProp
  * @author Score2
  * @since 2022/06/08 17:47
  */
-abstract class Wan(val wanId: Int, val ac: IkuaiAC) {
+abstract class Wan(val wanId: Int, val router: IkuaiRouter) {
 
-    open val json get() = ActionProp.actionWanShow(ac, wanId).postJson(ac)
+    open val json get() = ActionProp.actionWanShow(router, wanId).postJson(router)
 
     var isDefaultGateway: Boolean
         get() = json.get("default_route").asNumBool
         set(value) = json.addProperty("default_route", value.asNumSign)
 
-    val ethernets get() = ac.lanWanSettings.ethernets.filter { it.`interface` == "wan$wanId" }
+    val ethernets get() = router.lanWanSettings.ethernets.filter { it.`interface` == "wan$wanId" }
 
     enum class Type(val internet: Int) {
         STATIC(0),

@@ -1,4 +1,4 @@
-package ltd.lths.wireless.ikuai.ac.network.interfaces.wan
+package ltd.lths.wireless.ikuai.router.network.interfaces.wan
 
 /**
  * ikuai-entourage

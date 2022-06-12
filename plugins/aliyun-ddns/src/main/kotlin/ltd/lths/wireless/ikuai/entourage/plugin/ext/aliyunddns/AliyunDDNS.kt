@@ -1,31 +1,14 @@
 package ltd.lths.wireless.ikuai.entourage.plugin.ext.aliyunddns
 
-import com.aliyuncs.DefaultAcsClient
-import com.aliyuncs.alidns.model.v20150109.AddDomainRecordRequest
-import com.aliyuncs.alidns.model.v20150109.DeleteDomainRecordRequest
-import com.aliyuncs.alidns.model.v20150109.DescribeDomainRecordsRequest
-import com.aliyuncs.alidns.model.v20150109.DescribeDomainRecordsResponse
-import com.aliyuncs.exceptions.ClientException
-import com.aliyuncs.exceptions.ServerException
-import com.aliyuncs.profile.DefaultProfile
-import com.google.gson.Gson
-import com.google.gson.JsonParser
 import ltd.lths.wireless.ikuai.entourage.plugin.ext.aliyunddns.element.Domain
-import ltd.lths.wireless.ikuai.ac.network.interfaces.wan.MixWan
+import ltd.lths.wireless.ikuai.router.network.interfaces.wan.MixWan
 import ltd.lths.wireless.ikuai.entourage.Entourage
 import ltd.lths.wireless.ikuai.entourage.api.losslessUpdate
-import ltd.lths.wireless.ikuai.entourage.api.println
 import ltd.lths.wireless.ikuai.entourage.plugin.EntouragePlugin
 import ltd.lths.wireless.ikuai.entourage.plugin.ext.aliyunddns.Aliyun.addAliyunRecord
 import ltd.lths.wireless.ikuai.entourage.plugin.ext.aliyunddns.Aliyun.delAliyunRecord
 import ltd.lths.wireless.ikuai.entourage.plugin.ext.aliyunddns.Aliyun.getAliyunRecords
-import taboolib.common.env.RuntimeDependencies
-import taboolib.common.env.RuntimeDependency
-import taboolib.common.platform.ProxyCommandSender
-import taboolib.common.platform.command.CommandContext
-import taboolib.common.platform.command.command
 import taboolib.common.platform.function.submit
-import taboolib.module.configuration.Configuration
 
 /**
  * ikuai-entourage
@@ -71,8 +54,8 @@ object AliyunDDNS : EntouragePlugin("aliyun-ddns") {
         running = true
         logger.info("开始刷新, 间隔 $refreshInterval 秒, 将针对 ac $refreshACName 进行刷新")
         submit(async = true, period = refreshInterval * 20) {
-            val ac = Entourage.bindACs.find { refreshACName == it.name } ?: return@submit logger.info("§c获取对应绑定 AC $refreshACName 失败.")
-            val iKuaiDomains = ac.lanWanSettings.getWan(1, MixWan::class.java).AdslWans.map { Domain("@", "A", it.ip) }
+            val router = Entourage.bindRouters.find { refreshACName == it.name } ?: return@submit logger.info("§c获取对应绑定 AC $refreshACName 失败.")
+            val iKuaiDomains = router.lanWanSettings.getWan(1, MixWan::class.java).AdslWans.map { Domain("@", "A", it.ip) }
             val aliyunDomains = getAliyunRecords().filter { it.rR == "@" }
 
             aliyunDomains.toMutableList().losslessUpdate(

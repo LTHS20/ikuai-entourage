@@ -1,8 +1,7 @@
 package ltd.lths.wireless.ikuai.entourage
 
 import joptsimple.OptionSet
-import ltd.lths.wireless.ikuai.ac.IkuaiAC
-import ltd.lths.wireless.ikuai.ac.network.interfaces.wan.MixWan
+import ltd.lths.wireless.ikuai.router.IkuaiRouter
 import ltd.lths.wireless.ikuai.entourage.api.losslessUpdate
 import ltd.lths.wireless.ikuai.entourage.api.println
 import ltd.lths.wireless.ikuai.entourage.command.CommandManager
@@ -14,9 +13,6 @@ import taboolib.common.platform.ProxyCommandSender
 import taboolib.common.platform.command.command
 import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
-import taboolib.module.configuration.Type
-import java.io.File
-import kotlin.math.log
 import kotlin.system.exitProcess
 
 /**
@@ -36,7 +32,7 @@ object Entourage {
     var running = false
         private set
 
-    val bindACs = mutableListOf<IkuaiAC>()
+    val bindRouters = mutableListOf<IkuaiRouter>()
 
     fun main(options: OptionSet?) {
         if (options != null) when {
@@ -85,13 +81,13 @@ object Entourage {
 
             dynamic {
                 suggestion<ProxyCommandSender> { sender, context ->
-                    bindACs.map { it.name }
+                    bindRouters.map { it.name }
                 }
 
                 literal("ethernet", "ethernets") {
                     dynamic {
                         suggestion<ProxyCommandSender> { sender, context ->
-                            val ac = bindACs.find { it.name == context.argument(-2) }!!
+                            val ac = bindRouters.find { it.name == context.argument(-2) }!!
                             ac.lanWanSettings.ethernets.map { it.name }
                         }
                     }
@@ -154,9 +150,9 @@ object Entourage {
 
     fun loadIkuaiACs() {
         config.getConfigurationSection("ikuai-ac")!!.let { section ->
-            bindACs.losslessUpdate(
+            bindRouters.losslessUpdate(
                 section.getKeys(false).map {
-                    val ac = IkuaiAC(it, section.getConfigurationSection(it)!!)
+                    val ac = IkuaiRouter(it, section.getConfigurationSection(it)!!)
                     ac
                 },
                 accord = { t, t1 ->
@@ -194,7 +190,7 @@ object Entourage {
 
     fun test() {
         logger.info("开始调试")
-        val ac = IkuaiAC("test1", "172.18.0.1", "test", "lthstester123")
+        val ac = IkuaiRouter("test1", "172.18.0.1", "test", "lthstester123")
 
         /*ac.lanWanSettings.getWan(1, MixWan::class.java).AdslWans.forEach {
             "${it.vlanId}:${it.vlanName}:${it.ip}:${it.username}:${it.password}".println()

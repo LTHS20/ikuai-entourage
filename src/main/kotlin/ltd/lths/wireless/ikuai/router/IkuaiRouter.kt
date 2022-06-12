@@ -1,8 +1,8 @@
-package ltd.lths.wireless.ikuai.ac
+package ltd.lths.wireless.ikuai.router
 
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import ltd.lths.wireless.ikuai.ac.network.interfaces.LanWanSettings
+import ltd.lths.wireless.ikuai.router.network.interfaces.LanWanSettings
 import ltd.lths.wireless.ikuai.entourage.Entourage.config
 import ltd.lths.wireless.ikuai.entourage.api.base64
 import ltd.lths.wireless.ikuai.entourage.api.md5
@@ -25,7 +25,7 @@ import java.net.InetAddress
  * @author Score2
  * @since 2022/06/08 17:27
  */
-class IkuaiAC(
+class IkuaiRouter(
     val name: String,
     var ip: String,
     var username: String,

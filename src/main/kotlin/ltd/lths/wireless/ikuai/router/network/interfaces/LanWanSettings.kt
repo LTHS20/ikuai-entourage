@@ -1,10 +1,8 @@
-package ltd.lths.wireless.ikuai.ac.network.interfaces
+package ltd.lths.wireless.ikuai.router.network.interfaces
 
-import ltd.lths.wireless.ikuai.ac.IkuaiAC
-import ltd.lths.wireless.ikuai.ac.network.interfaces.lan.Lan
-import ltd.lths.wireless.ikuai.ac.network.interfaces.wan.*
-import ltd.lths.wireless.ikuai.ac.network.interfaces.wan.Wan.Type.*
-import ltd.lths.wireless.ikuai.entourage.api.println
+import ltd.lths.wireless.ikuai.router.IkuaiRouter
+import ltd.lths.wireless.ikuai.router.network.interfaces.wan.*
+import ltd.lths.wireless.ikuai.router.network.interfaces.wan.Wan.Type.*
 import ltd.lths.wireless.ikuai.entourage.util.ActionProp
 
 /**
@@ -14,14 +12,14 @@ import ltd.lths.wireless.ikuai.entourage.util.ActionProp
  * @author Score2
  * @since 2022/06/08 17:46
  */
-class LanWanSettings(val ac: IkuaiAC) {
+class LanWanSettings(val router: IkuaiRouter) {
 
-    val json get() = ActionProp.actionShowEtherInfo(ac).postJson(ac)
+    val json get() = ActionProp.actionShowEtherInfo(router).postJson(router)
 
     val ethernets get() =
         json.getAsJsonObject("Data").getAsJsonObject("ether_info").let { infos ->
             infos.keySet().map {
-                Ethernet(ac, it, infos.getAsJsonObject(it))
+                Ethernet(router, it, infos.getAsJsonObject(it))
             }
         }
 
@@ -30,10 +28,10 @@ class LanWanSettings(val ac: IkuaiAC) {
         val id = jsonObject.get("id").asInt
 
         when (Wan.Type.find(jsonObject.get("internet").asInt)) {
-            STATIC -> RootStaticWan(id, ac)
-            DYNAMIC -> RootDynamicWan(id, ac)
-            ADSL -> RootAdslWan(id, ac)
-            MIX, VLAN_MIX -> MixWan(id, ac)
+            STATIC -> RootStaticWan(id, router)
+            DYNAMIC -> RootDynamicWan(id, router)
+            ADSL -> RootAdslWan(id, router)
+            MIX, VLAN_MIX -> MixWan(id, router)
         }
     }
 
@@ -42,10 +40,10 @@ class LanWanSettings(val ac: IkuaiAC) {
         val id = jsonObject.get("id").asInt
 
         when (Wan.Type.find(jsonObject.get("internet").asInt)) {
-            STATIC -> RootStaticWan(id, ac)
-            DYNAMIC -> RootDynamicWan(id, ac)
-            ADSL -> RootAdslWan(id, ac)
-            MIX, VLAN_MIX -> MixWan(id, ac)
+            STATIC -> RootStaticWan(id, router)
+            DYNAMIC -> RootDynamicWan(id, router)
+            ADSL -> RootAdslWan(id, router)
+            MIX, VLAN_MIX -> MixWan(id, router)
         }
     }
 

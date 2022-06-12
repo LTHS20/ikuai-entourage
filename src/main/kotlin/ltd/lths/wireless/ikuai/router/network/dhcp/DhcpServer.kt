@@ -1,4 +1,4 @@
-package ltd.lths.wireless.ikuai.ac.network.dhcp
+package ltd.lths.wireless.ikuai.router.network.dhcp
 
 /**
  * ikuai-entourage

@@ -1,9 +1,8 @@
-package ltd.lths.wireless.ikuai.ac.network.interfaces
+package ltd.lths.wireless.ikuai.router.network.interfaces
 
 import com.google.gson.JsonObject
-import ltd.lths.wireless.ikuai.ac.IkuaiAC
+import ltd.lths.wireless.ikuai.router.IkuaiRouter
 import ltd.lths.wireless.ikuai.entourage.api.asNumBool
-import ltd.lths.wireless.ikuai.entourage.api.asNumSign
 
 /**
  * ikuai-entourage
@@ -13,7 +12,7 @@ import ltd.lths.wireless.ikuai.entourage.api.asNumSign
  * @since 2022/06/08 17:49
  */
 data class Ethernet(
-    val ac: IkuaiAC,
+    val router: IkuaiRouter,
     val name: String,
     var json: JsonObject
 ) {

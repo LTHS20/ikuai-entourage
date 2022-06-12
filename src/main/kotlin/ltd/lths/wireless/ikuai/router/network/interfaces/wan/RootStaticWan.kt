@@ -1,6 +1,6 @@
-package ltd.lths.wireless.ikuai.ac.network.interfaces.wan
+package ltd.lths.wireless.ikuai.router.network.interfaces.wan
 
-import ltd.lths.wireless.ikuai.ac.IkuaiAC
+import ltd.lths.wireless.ikuai.router.IkuaiRouter
 
 /**
  * ikuai-entourage
@@ -11,6 +11,6 @@ import ltd.lths.wireless.ikuai.ac.IkuaiAC
  */
 open class RootStaticWan(
     wanId: Int,
-    ac: IkuaiAC
+    ac: IkuaiRouter
 ) : Wan(wanId, ac), StaticWan {
 }

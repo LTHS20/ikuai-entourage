@@ -1,8 +1,8 @@
-package ltd.lths.wireless.ikuai.ac.network.interfaces.wan.mix
+package ltd.lths.wireless.ikuai.router.network.interfaces.wan.mix
 
 import com.google.gson.JsonObject
-import ltd.lths.wireless.ikuai.ac.IkuaiAC
-import ltd.lths.wireless.ikuai.ac.network.interfaces.wan.DynamicWan
+import ltd.lths.wireless.ikuai.router.IkuaiRouter
+import ltd.lths.wireless.ikuai.router.network.interfaces.wan.DynamicWan
 
 /**
  * ikuai-entourage
@@ -13,7 +13,7 @@ import ltd.lths.wireless.ikuai.ac.network.interfaces.wan.DynamicWan
  */
 class MixDynamicWan(
     wanId: Int,
-    ac: IkuaiAC,
+    ac: IkuaiRouter,
     override var json: JsonObject
 ) : MixIndividualWan, DynamicWan {
 

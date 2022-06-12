@@ -1,4 +1,4 @@
-package ltd.lths.wireless.ikuai.ac.network.interfaces.wan.mix
+package ltd.lths.wireless.ikuai.router.network.interfaces.wan.mix
 
 import com.google.gson.JsonObject
 import ltd.lths.wireless.ikuai.entourage.api.asWrittenBool

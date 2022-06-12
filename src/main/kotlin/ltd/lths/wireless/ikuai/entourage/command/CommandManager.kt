@@ -1,9 +1,6 @@
 package ltd.lths.wireless.ikuai.entourage.command
 
-import ltd.lths.wireless.ikuai.ac.IkuaiAC
-import ltd.lths.wireless.ikuai.entourage.Entourage
 import ltd.lths.wireless.ikuai.entourage.Entourage.logger
-import ltd.lths.wireless.ikuai.entourage.Entourage.onDisable
 import ltd.lths.wireless.ikuai.entourage.console.EntourageConsole
 import taboolib.common.platform.Awake
 import taboolib.common.platform.ProxyCommandSender

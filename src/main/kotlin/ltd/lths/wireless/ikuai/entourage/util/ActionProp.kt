@@ -1,10 +1,8 @@
 package ltd.lths.wireless.ikuai.entourage.util
 
 import com.google.gson.JsonObject
-import ltd.lths.wireless.ikuai.ac.IkuaiAC
-import ltd.lths.wireless.ikuai.ac.network.interfaces.lan.Lan
-import ltd.lths.wireless.ikuai.ac.network.interfaces.wan.Wan
-import ltd.lths.wireless.ikuai.ac.network.interfaces.wan.mix.MixIndividualWan
+import ltd.lths.wireless.ikuai.router.IkuaiRouter
+import ltd.lths.wireless.ikuai.router.network.interfaces.wan.mix.MixIndividualWan
 
 /**
  * ikuai-entourage
@@ -31,10 +29,10 @@ class ActionProp(val funcName: String, val action: String, val param: JsonObject
         }
     )
 
-    fun post(ac: IkuaiAC) =
+    fun post(ac: IkuaiRouter) =
         ac.post(this)
 
-    fun postJson(ac: IkuaiAC, action: IkuaiAC.PostAction = IkuaiAC.PostAction.CALL) =
+    fun postJson(ac: IkuaiRouter, action: IkuaiRouter.PostAction = IkuaiRouter.PostAction.CALL) =
         ac.postJson(action, this)
 
     fun toJson(): JsonObject {
@@ -52,7 +50,7 @@ class ActionProp(val funcName: String, val action: String, val param: JsonObject
 
     companion object {
 
-        fun actionWanShow(ac: IkuaiAC, wanId: Int) = ac.prop(
+        fun actionWanShow(ac: IkuaiRouter, wanId: Int) = ac.prop(
             "wan",
             "show",
 
@@ -60,7 +58,7 @@ class ActionProp(val funcName: String, val action: String, val param: JsonObject
             "TYPE" to "support_wisp,total,data"
         )
 
-        fun actionLanShow(ac: IkuaiAC, lanId: Int) = ac.prop(
+        fun actionLanShow(ac: IkuaiRouter, lanId: Int) = ac.prop(
             "lan",
             "show",
 
@@ -68,14 +66,14 @@ class ActionProp(val funcName: String, val action: String, val param: JsonObject
             "TYPE" to "support_wisp,total,data"
         )
 
-        fun actionShowEtherInfo(ac: IkuaiAC) = ac.prop(
+        fun actionShowEtherInfo(ac: IkuaiRouter) = ac.prop(
             "homepage",
             "show",
 
             "TYPE" to "ether_info,snapshoot"
         )
 
-        fun actionMixWanShow(ac: IkuaiAC, wanId: Int, vlanInternet: Int) = ac.prop(
+        fun actionMixWanShow(ac: IkuaiRouter, wanId: Int, vlanInternet: Int) = ac.prop(
             "wan",
             "show",
 
@@ -87,13 +85,13 @@ class ActionProp(val funcName: String, val action: String, val param: JsonObject
             "vlan_internet" to vlanInternet
         )
 
-        fun actionMixWanAdd(ac: IkuaiAC, wan: MixIndividualWan) = ac.prop(
+        fun actionMixWanAdd(ac: IkuaiRouter, wan: MixIndividualWan) = ac.prop(
             "wan",
             "vlan_add",
             wan.json
         )
 
-        fun actionMixWanDel(ac: IkuaiAC, wan: MixIndividualWan) = ac.prop(
+        fun actionMixWanDel(ac: IkuaiRouter, wan: MixIndividualWan) = ac.prop(
             "wan",
             "vlan_del",
             "id" to wan.id
