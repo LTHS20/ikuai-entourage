@@ -2,6 +2,7 @@ package ltd.lths.wireless.ikuai.entourage.util
 
 import com.google.gson.JsonObject
 import ltd.lths.wireless.ikuai.router.IkuaiRouter
+import ltd.lths.wireless.ikuai.router.network.dmz.Dmz
 import ltd.lths.wireless.ikuai.router.network.interfaces.wan.mix.MixIndividualWan
 
 /**
@@ -50,7 +51,7 @@ class ActionProp(val funcName: String, val action: String, val param: JsonObject
 
     companion object {
 
-        fun actionWanShow(ac: IkuaiRouter, wanId: Int) = ac.prop(
+        fun actionWanShow(router: IkuaiRouter, wanId: Int) = router.prop(
             "wan",
             "show",
 
@@ -58,7 +59,7 @@ class ActionProp(val funcName: String, val action: String, val param: JsonObject
             "TYPE" to "support_wisp,total,data"
         )
 
-        fun actionLanShow(ac: IkuaiRouter, lanId: Int) = ac.prop(
+        fun actionLanShow(router: IkuaiRouter, lanId: Int) = router.prop(
             "lan",
             "show",
 
@@ -66,14 +67,14 @@ class ActionProp(val funcName: String, val action: String, val param: JsonObject
             "TYPE" to "support_wisp,total,data"
         )
 
-        fun actionShowEtherInfo(ac: IkuaiRouter) = ac.prop(
+        fun actionShowEtherInfo(router: IkuaiRouter) = router.prop(
             "homepage",
             "show",
 
             "TYPE" to "ether_info,snapshoot"
         )
 
-        fun actionMixWanShow(ac: IkuaiRouter, wanId: Int, vlanInternet: Int) = ac.prop(
+        fun actionMixWanShow(router: IkuaiRouter, wanId: Int, vlanInternet: Int) = router.prop(
             "wan",
             "show",
 
@@ -81,24 +82,42 @@ class ActionProp(val funcName: String, val action: String, val param: JsonObject
             "ORDER_BY" to "id",
             "TYPE" to "vlan_data,vlan_total",
             "interface" to "wan$wanId",
-            "limit" to "0,20",
+//            "limit" to "0,20",
             "vlan_internet" to vlanInternet
         )
 
-        fun actionMixWanAdd(ac: IkuaiRouter, wan: MixIndividualWan) = ac.prop(
+        fun actionMixWanAdd(router: IkuaiRouter, wan: MixIndividualWan) = router.prop(
             "wan",
             "vlan_add",
             wan.json
         )
 
-        fun actionMixWanDel(ac: IkuaiRouter, wan: MixIndividualWan) = ac.prop(
+        fun actionMixWanDel(router: IkuaiRouter, wan: MixIndividualWan) = router.prop(
             "wan",
             "vlan_del",
             "id" to wan.id
         )
 
+
+        fun actionDmzShow(router: IkuaiRouter) = router.prop(
+            "netmap",
+            "show",
+
+            "ORDER" to "",
+            "ORDER_BY" to "",
+            "TYPE" to "total,data",
+//            "limit" to "0,20",
+        )
+
+        fun actionDmzEdit(router: IkuaiRouter, dmz: Dmz) = router.prop(
+            "netmap",
+            "edit",
+
+            dmz.json
+        )
     }
 }
 
-val JsonObject.vlanData get() = getAsJsonObject("Data").getAsJsonArray("vlan_data")
-val JsonObject.data get() = getAsJsonObject("Data").getAsJsonArray("data")[0].asJsonObject
+val JsonObject.vlanDataArray get() = getAsJsonObject("Data").getAsJsonArray("vlan_data")
+val JsonObject.data get() = dataArray[0].asJsonObject
+val JsonObject.dataArray get() = getAsJsonObject("Data").getAsJsonArray("data")

@@ -7,5 +7,5 @@ package ltd.lths.wireless.ikuai.router.network.interfaces.wan
  * @author Score2
  * @since 2022/06/10 23:58
  */
-interface DynamicWan {
+interface DynamicWan : WanInterface {
 }

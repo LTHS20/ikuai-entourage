@@ -6,7 +6,8 @@ import ltd.lths.wireless.ikuai.router.network.interfaces.wan.mix.MixDynamicWan
 import ltd.lths.wireless.ikuai.router.network.interfaces.wan.mix.MixStaticWan
 import ltd.lths.wireless.ikuai.entourage.api.losslessUpdate
 import ltd.lths.wireless.ikuai.entourage.util.ActionProp
-import ltd.lths.wireless.ikuai.entourage.util.vlanData
+import ltd.lths.wireless.ikuai.entourage.util.vlanDataArray
+import ltd.lths.wireless.ikuai.router.network.interfaces.wan.mix.MixIndividualWan
 
 /**
  * ikuai-entourage
@@ -24,7 +25,7 @@ class MixWan(wanId: Int, ac: IkuaiRouter) : Wan(wanId, ac) {
     var staticWans = mutableListOf<MixStaticWan>()
         get() {
             field = field.losslessUpdate(
-                ActionProp.actionMixWanShow(router, wanId, Type.STATIC.internet).postJson(router).vlanData.map {
+                ActionProp.actionMixWanShow(router, wanId, Type.STATIC.internet).postJson(router).vlanDataArray.map {
                     MixStaticWan(wanId, router, it.asJsonObject)
                 },
                 accord =  { t, t1 ->
@@ -39,7 +40,7 @@ class MixWan(wanId: Int, ac: IkuaiRouter) : Wan(wanId, ac) {
         }
         set(value) {
             value.losslessUpdate(
-                router.postJson(ActionProp.actionMixWanShow(router, wanId, Type.STATIC.internet)).vlanData.map {
+                router.postJson(ActionProp.actionMixWanShow(router, wanId, Type.STATIC.internet)).vlanDataArray.map {
                     MixStaticWan(wanId, router, it.asJsonObject)
                 },
                 accord =  { t, t1 ->
@@ -55,7 +56,7 @@ class MixWan(wanId: Int, ac: IkuaiRouter) : Wan(wanId, ac) {
     var dynamicWans = mutableListOf<MixDynamicWan>()
         get() {
             field = field.losslessUpdate(
-                ActionProp.actionMixWanShow(router, wanId, Type.DYNAMIC.internet).postJson(router).vlanData.map {
+                ActionProp.actionMixWanShow(router, wanId, Type.DYNAMIC.internet).postJson(router).vlanDataArray.map {
                     MixDynamicWan(wanId, router, it.asJsonObject)
                 },
                 accord =  { t, t1 ->
@@ -70,7 +71,7 @@ class MixWan(wanId: Int, ac: IkuaiRouter) : Wan(wanId, ac) {
         }
         set(value) {
             value.losslessUpdate(
-                router.postJson(ActionProp.actionMixWanShow(router, wanId, Type.DYNAMIC.internet)).vlanData.map {
+                router.postJson(ActionProp.actionMixWanShow(router, wanId, Type.DYNAMIC.internet)).vlanDataArray.map {
                     MixDynamicWan(wanId, router, it.asJsonObject)
                 },
                 accord =  { t, t1 ->
@@ -83,10 +84,10 @@ class MixWan(wanId: Int, ac: IkuaiRouter) : Wan(wanId, ac) {
             )
         }
 
-    var AdslWans = mutableListOf<MixAdslWan>()
+    var adslWans = mutableListOf<MixAdslWan>()
         get() {
             field = field.losslessUpdate(
-                ActionProp.actionMixWanShow(router, wanId, Type.ADSL.internet).postJson(router).vlanData.map {
+                ActionProp.actionMixWanShow(router, wanId, Type.ADSL.internet).postJson(router).vlanDataArray.map {
                     MixAdslWan(wanId, router, it.asJsonObject)
                 },
                 accord =  { t, t1 ->
@@ -101,7 +102,7 @@ class MixWan(wanId: Int, ac: IkuaiRouter) : Wan(wanId, ac) {
         }
         set(value) {
             value.losslessUpdate(
-                router.postJson(ActionProp.actionMixWanShow(router, wanId, Type.ADSL.internet)).vlanData.map {
+                router.postJson(ActionProp.actionMixWanShow(router, wanId, Type.ADSL.internet)).vlanDataArray.map {
                     MixAdslWan(wanId, router, it.asJsonObject)
                 },
                 accord =  { t, t1 ->
@@ -113,6 +114,13 @@ class MixWan(wanId: Int, ac: IkuaiRouter) : Wan(wanId, ac) {
                 }
             )
         }
+
+    val individualWans get() = mutableListOf<MixIndividualWan>().run {
+        addAll(staticWans)
+        addAll(dynamicWans)
+        addAll(adslWans)
+        this
+    }
 
     enum class Type(val internet: Int) {
         STATIC(0),

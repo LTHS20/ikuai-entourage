@@ -35,6 +35,13 @@ class LanWanSettings(val router: IkuaiRouter) {
         }
     }
 
+    val wanInterfaces get() = wans.flatMap {
+        if (it !is MixWan) {
+            return@flatMap listOf(it.interfaceName)
+        }
+        it.individualWans.map { it.interfaceName }
+    }
+
     val lans get() = json.getAsJsonObject("Data").getAsJsonArray("snapshoot_lan").map {
         val jsonObject = it.asJsonObject
         val id = jsonObject.get("id").asInt

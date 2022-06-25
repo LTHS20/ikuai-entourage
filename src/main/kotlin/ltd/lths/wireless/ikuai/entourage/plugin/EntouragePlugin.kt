@@ -35,7 +35,7 @@ abstract class EntouragePlugin(val name: String) {
                 stream.close()
             }
 
-            config = Configuration.loadFromFile(configFile)
+            config = Configuration.loadFromFile(configFile.also { logger.info(it.path) })
             logger.info("插件 $name 的默认配置文件已载入")
         }
     }

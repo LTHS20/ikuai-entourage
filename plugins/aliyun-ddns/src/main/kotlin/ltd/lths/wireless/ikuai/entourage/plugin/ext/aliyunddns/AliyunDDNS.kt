@@ -9,6 +9,7 @@ import ltd.lths.wireless.ikuai.entourage.plugin.ext.aliyunddns.Aliyun.addAliyunR
 import ltd.lths.wireless.ikuai.entourage.plugin.ext.aliyunddns.Aliyun.delAliyunRecord
 import ltd.lths.wireless.ikuai.entourage.plugin.ext.aliyunddns.Aliyun.getAliyunRecords
 import taboolib.common.platform.function.submit
+import taboolib.common.platform.service.PlatformExecutor
 
 /**
  * ikuai-entourage
@@ -23,17 +24,14 @@ import taboolib.common.platform.function.submit
 //)
 object AliyunDDNS : EntouragePlugin("aliyun-ddns") {
 
-    var running = false
-        private set
-
     val accessKeyId get() = config.getString("aliyun.access-key-id", "xxx")!!
     val secret get() = config.getString("aliyun.secret", "xxx")!!
     val domainName get() = config.getString("aliyun.domain-name", "xxx")!!
     val regionId get() = config.getString("aliyun.region-id", "cn-hangzhou")!!
 
     val refreshInterval get() = config.getLong("refresh-interval", 60)
-    val refreshACName get() = config.getString("refresh-ac.name", "test")
-    val refreshACWanId get() = config.getInt("refresh-ac.wan-id", 1)
+    val refreshEntourageName get() = config.getString("refresh-entourage.name", "test")
+    val refreshEntourageWanId get() = config.getInt("refresh-entourage.wan-id", 1)
 
     override fun onEnable() {
         if (arrayOf(accessKeyId, secret, domainName).contains("xxx")) {
@@ -47,15 +45,15 @@ object AliyunDDNS : EntouragePlugin("aliyun-ddns") {
         start()
     }
 
+    var task: PlatformExecutor.PlatformTask? = null
+
     fun start() {
-        if (running) {
-            return
-        }
-        running = true
-        logger.info("开始刷新, 间隔 $refreshInterval 秒, 将针对 ac $refreshACName 进行刷新")
-        submit(async = true, period = refreshInterval * 20) {
-            val router = Entourage.bindRouters.find { refreshACName == it.name } ?: return@submit logger.info("§c获取对应绑定 AC $refreshACName 失败.")
-            val iKuaiDomains = router.lanWanSettings.getWan(1, MixWan::class.java).AdslWans.map { Domain("@", "A", it.ip) }
+        task?.cancel()
+
+        logger.info("开始刷新, 间隔 $refreshInterval 秒, 将针对 ac $refreshEntourageName 进行刷新")
+        task = submit(async = true, period = refreshInterval * 20) {
+            val router = kotlin.runCatching { Entourage.bindRouters.find { refreshEntourageName == it.name } }.onFailure { it.printStackTrace() }.getOrNull() ?: return@submit logger.info("§c获取对应绑定 AC $refreshEntourageName 失败.")
+            val iKuaiDomains = router.lanWanSettings.getWan(refreshEntourageWanId, MixWan::class.java).adslWans.map { Domain("@", "A", it.ip) }
             val aliyunDomains = getAliyunRecords().filter { it.rR == "@" }
 
             aliyunDomains.toMutableList().losslessUpdate(

@@ -3,6 +3,7 @@ package ltd.lths.wireless.ikuai.router.network.interfaces.wan.mix
 import com.google.gson.JsonObject
 import ltd.lths.wireless.ikuai.entourage.api.asWrittenBool
 import ltd.lths.wireless.ikuai.entourage.api.asWrittenString
+import ltd.lths.wireless.ikuai.router.network.interfaces.wan.WanInterface
 
 /**
  * ikuai-entourage
@@ -11,7 +12,7 @@ import ltd.lths.wireless.ikuai.entourage.api.asWrittenString
  * @author Score2
  * @since 2022/06/10 23:26
  */
-interface MixIndividualWan {
+interface MixIndividualWan : WanInterface {
 
     var json: JsonObject
 
@@ -25,6 +26,9 @@ interface MixIndividualWan {
     var vlanName: String
         get() = json.get("vlan_name").asString
         set(value) = json.addProperty("vlan_name", value)
+
+    override val interfaceName: String
+        get() = vlanName
 
 
     var isEnabled: Boolean

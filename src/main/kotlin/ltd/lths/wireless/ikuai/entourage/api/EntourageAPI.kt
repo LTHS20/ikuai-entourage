@@ -1,10 +1,11 @@
 package ltd.lths.wireless.ikuai.entourage.api
 
 import com.google.gson.JsonElement
-import ltd.lths.wireless.ikuai.entourage.Entourage
 import ltd.lths.wireless.ikuai.entourage.Entourage.logger
 import java.security.MessageDigest
 import java.util.*
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 /**
  * ikuai-entourage
@@ -53,6 +54,60 @@ fun <T> MutableList<T>.losslessUpdate(
 
     return this
 }
+
+/**
+ * IPv4地址转换为int类型数字
+ *
+ */
+fun String.toIpv4Int(): Int {
+    // 判断是否是ip格式的
+    if (!isIPv4Address(this)) throw RuntimeException("Invalid ip address")
+
+    // 匹配数字
+    val pattern: Pattern = Pattern.compile("\\d+")
+    val matcher: Matcher = pattern.matcher(this)
+    var result = 0
+    var counter = 0
+    while (matcher.find()) {
+        val value: Int = matcher.group().toInt()
+        result = value shl 8 * (3 - counter++) or result
+    }
+    return result
+}
+
+/**
+ * 判断是否为ipv4地址
+ *
+ */
+private fun isIPv4Address(ipv4Addr: String): Boolean {
+    val lower = "(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])" // 0-255的数字
+    val regex = "$lower(\\.$lower){3}"
+    val pattern: Pattern = Pattern.compile(regex)
+    val matcher: Matcher = pattern.matcher(ipv4Addr)
+    return matcher.matches()
+}
+
+/**
+ * 将int数字转换成ipv4地址
+ *
+ */
+fun Int.toIpv4(): String {
+    val sb = StringBuilder()
+    var num = 0
+    var needPoint = false // 是否需要加入'.'
+    for (i in 0..3) {
+        if (needPoint) {
+            sb.append('.')
+        }
+        needPoint = true
+        val offset = 8 * (3 - i)
+        num = this shr offset and 0xff
+        sb.append(num)
+    }
+    return sb.toString()
+}
+
+
 val String.md5: String get() {
     val messageDigest = MessageDigest.getInstance("MD5")
     val inputByteArray: ByteArray = toByteArray(Charsets.UTF_8)

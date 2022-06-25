@@ -8,6 +8,6 @@ aliyun:
 refresh-interval: 60
 
 # 仅对以下名称的 ac 实施刷新
-refresh-ac:
+refresh-entourage:
   name: test
   wan-id: 1

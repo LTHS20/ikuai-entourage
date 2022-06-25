@@ -9,7 +9,7 @@ import com.google.gson.JsonObject
  * @author Score2
  * @since 2022/06/10 23:58
  */
-interface AdslWan {
+interface AdslWan : WanInterface {
 
     val json: JsonObject
 

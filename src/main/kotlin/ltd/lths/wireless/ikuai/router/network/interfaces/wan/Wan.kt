@@ -16,6 +16,9 @@ abstract class Wan(val wanId: Int, val router: IkuaiRouter) {
 
     open val json get() = ActionProp.actionWanShow(router, wanId).postJson(router)
 
+    val interfaceName: String
+        get() = "wan$wanId"
+
     var isDefaultGateway: Boolean
         get() = json.get("default_route").asNumBool
         set(value) = json.addProperty("default_route", value.asNumSign)
