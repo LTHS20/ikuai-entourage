@@ -55,7 +55,7 @@ object Entourage {
         }
 
 
-        logger.info("正在载入iKuaiAC...")
+        logger.info("正在载入iKuaiRouter...")
         loadIkuaiACs()
 
         logger.info("正在载入内部命令...")
@@ -149,7 +149,7 @@ object Entourage {
     }
 
     fun loadIkuaiACs() {
-        config.getConfigurationSection("ikuai-ac")!!.let { section ->
+        config.getConfigurationSection("ikuai-router")!!.let { section ->
             bindRouters.losslessUpdate(
                 section.getKeys(false).map {
                     val ac = IkuaiRouter(it, section.getConfigurationSection(it)!!)

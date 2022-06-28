@@ -6,6 +6,7 @@ import java.security.MessageDigest
 import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
+import kotlin.math.pow
 
 /**
  * ikuai-entourage
@@ -59,31 +60,25 @@ fun <T> MutableList<T>.losslessUpdate(
  * IPv4地址转换为int类型数字
  *
  */
-fun String.toIpv4Int(): Int {
-    // 判断是否是ip格式的
-    if (!isIPv4Address(this)) throw RuntimeException("Invalid ip address")
+val String.asIpv4Decimal: Long
+    get() {
+        if (!isIpv4) {
+            return 0
+        }
+        val parts = split(".").map { it.toInt() }
 
-    // 匹配数字
-    val pattern: Pattern = Pattern.compile("\\d+")
-    val matcher: Matcher = pattern.matcher(this)
-    var result = 0
-    var counter = 0
-    while (matcher.find()) {
-        val value: Int = matcher.group().toInt()
-        result = value shl 8 * (3 - counter++) or result
+        return (parts[0] * 256.0.pow(3) + parts[1] * 256.0.pow(2) + parts[2] * 256 + parts[3]).toLong()
     }
-    return result
-}
 
 /**
  * 判断是否为ipv4地址
  *
  */
-private fun isIPv4Address(ipv4Addr: String): Boolean {
+val String.isIpv4: Boolean get() {
     val lower = "(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])" // 0-255的数字
     val regex = "$lower(\\.$lower){3}"
     val pattern: Pattern = Pattern.compile(regex)
-    val matcher: Matcher = pattern.matcher(ipv4Addr)
+    val matcher: Matcher = pattern.matcher(this)
     return matcher.matches()
 }
 
@@ -91,21 +86,8 @@ private fun isIPv4Address(ipv4Addr: String): Boolean {
  * 将int数字转换成ipv4地址
  *
  */
-fun Int.toIpv4(): String {
-    val sb = StringBuilder()
-    var num = 0
-    var needPoint = false // 是否需要加入'.'
-    for (i in 0..3) {
-        if (needPoint) {
-            sb.append('.')
-        }
-        needPoint = true
-        val offset = 8 * (3 - i)
-        num = this shr offset and 0xff
-        sb.append(num)
-    }
-    return sb.toString()
-}
+val Long.asIpv4: String
+    get() = "${(this shr 24) % 256}.${(this shr 16) % 256}.${(this shr 8) % 256}.${this % 256}"
 
 
 val String.md5: String get() {

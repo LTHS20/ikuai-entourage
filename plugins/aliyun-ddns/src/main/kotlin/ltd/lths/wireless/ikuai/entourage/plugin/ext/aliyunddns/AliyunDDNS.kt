@@ -3,6 +3,7 @@ package ltd.lths.wireless.ikuai.entourage.plugin.ext.aliyunddns
 import ltd.lths.wireless.ikuai.entourage.plugin.ext.aliyunddns.element.Domain
 import ltd.lths.wireless.ikuai.router.network.interfaces.wan.MixWan
 import ltd.lths.wireless.ikuai.entourage.Entourage
+import ltd.lths.wireless.ikuai.entourage.api.isIpv4
 import ltd.lths.wireless.ikuai.entourage.api.losslessUpdate
 import ltd.lths.wireless.ikuai.entourage.plugin.EntouragePlugin
 import ltd.lths.wireless.ikuai.entourage.plugin.ext.aliyunddns.Aliyun.addAliyunRecord
@@ -53,7 +54,10 @@ object AliyunDDNS : EntouragePlugin("aliyun-ddns") {
         logger.info("开始刷新, 间隔 $refreshInterval 秒, 将针对 ac $refreshEntourageName 进行刷新")
         task = submit(async = true, period = refreshInterval * 20) {
             val router = kotlin.runCatching { Entourage.bindRouters.find { refreshEntourageName == it.name } }.onFailure { it.printStackTrace() }.getOrNull() ?: return@submit logger.info("§c获取对应绑定 AC $refreshEntourageName 失败.")
-            val iKuaiDomains = router.lanWanSettings.getWan(refreshEntourageWanId, MixWan::class.java).adslWans.map { Domain("@", "A", it.ip) }
+            val iKuaiDomains = router.lanWanSettings.getWan(refreshEntourageWanId, MixWan::class.java).adslWans.mapNotNull {
+                if (it.ip.isIpv4) Domain("@", "A", it.ip)
+                else null
+            }
             val aliyunDomains = getAliyunRecords().filter { it.rR == "@" }
 
             aliyunDomains.toMutableList().losslessUpdate(

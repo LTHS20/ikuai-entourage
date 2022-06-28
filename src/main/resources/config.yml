@@ -4,7 +4,7 @@ options:
     connect-timeout: 500
     socket-timeout: 500
 
-ikuai-ac:
+ikuai-router:
   test:
     host: '172.18.0.1'
     username: test
