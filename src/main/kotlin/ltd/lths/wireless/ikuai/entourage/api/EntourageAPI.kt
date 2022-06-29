@@ -22,7 +22,7 @@ import kotlin.math.pow
  * @param accord 根据指定字段值判断是否符合(原, 目标)
  * @param adding 增加元素时的操作, 手动决定是否增加
  * @param removing 删减元素时的操作, 手动决定是否删除
- * @param keepers 对那些没有被添加或删除的元素进行操作
+ * @param keepers 对那些没有被添加或删除的元素进行操作(origin, new)
  * @return 更新后的 list
  */
 fun <T> MutableList<T>.losslessUpdate(

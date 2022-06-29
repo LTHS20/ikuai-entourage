@@ -17,18 +17,35 @@ class DmzSettings(val router: IkuaiRouter) {
 
     val json get() = ActionProp.actionDmzShow(router)
 
-/*    var dmzs
-        get() = json.toJson().dataArray.map {
-            Dmz(router, it.asJsonObject)
-        }.toMutableList()
+    var dmzs = listOf<Dmz>()
+        get() {
+            field = json.toJson().dataArray.map {
+                Dmz(router, it.asJsonObject)
+            }.toList()
+            return field
+        }
         set(value) {
-            field.losslessUpdate(
+            field.toMutableList().losslessUpdate(
                 value,
-
+                accord = { t, t1 ->
+                    t.id == t1.id
+                },
+                adding = {
+                    ActionProp.actionDmzAdd(router, it)
+                    true
+                },
+                removing = {
+                    ActionProp.actionDmzDel(router, it)
+                    true
+                },
+                keepers = { t, t1 ->
+                    ActionProp.actionDmzEdit(router, t1)
+                    true
+                }
             )
 
-            return TODO()
-        }*/
+            return
+        }
 
 
 }

@@ -109,6 +109,21 @@ class ActionProp(val funcName: String, val action: String, val param: JsonObject
 //            "limit" to "0,20",
         )
 
+        fun actionDmzAdd(router: IkuaiRouter, dmz: Dmz) = router.prop(
+            "netmap",
+            "show",
+
+            dmz.json
+        )
+
+
+        fun actionDmzDel(router: IkuaiRouter, dmz: Dmz) = router.prop(
+            "netmap",
+            "del",
+
+            dmz.json
+        )
+
         fun actionDmzEdit(router: IkuaiRouter, dmz: Dmz) = router.prop(
             "netmap",
             "edit",
