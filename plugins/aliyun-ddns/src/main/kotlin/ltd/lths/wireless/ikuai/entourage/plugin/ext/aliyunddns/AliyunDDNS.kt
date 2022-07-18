@@ -39,47 +39,50 @@ object AliyunDDNS : EntouragePlugin("aliyun-ddns") {
             logger.info("§c请根据配置文件内容完成填写后输入 /pl $name reload 来启用该插件的功能.")
             return
         }
-        start()
+        logger.info("开始刷新, 间隔 $refreshInterval 秒, 将针对 ac $refreshEntourageName 进行刷新")
+        Thread {
+            while (true) {
+                kotlin.runCatching {
+                    update()
+                }.onFailure {
+                    it.printStackTrace()
+                }
+                Thread.sleep(refreshInterval * 1000)
+            }
+        }.start()
     }
 
     override fun onReload() {
-        start()
+        logger.info("重新载入成功, 将会手动触发一次更新")
+        update()
     }
 
-    var task: PlatformExecutor.PlatformTask? = null
-
-    fun start() {
-        task?.cancel()
-
-        logger.info("开始刷新, 间隔 $refreshInterval 秒, 将针对 ac $refreshEntourageName 进行刷新")
-        task = submit(async = true, period = refreshInterval * 20) {
-            val router = kotlin.runCatching { Entourage.bindRouters.find { refreshEntourageName == it.name } }.onFailure { it.printStackTrace() }.getOrNull() ?: return@submit logger.info("§c获取对应绑定 AC $refreshEntourageName 失败.")
-            val iKuaiDomains = router.lanWanSettings.getWan(refreshEntourageWanId, MixWan::class.java).adslWans.mapNotNull {
-                if (it.ip.isIpv4) Domain("@", "A", it.ip)
-                else null
-            }
-            val aliyunDomains = getAliyunRecords().filter { it.rR == "@" }
-
-            aliyunDomains.toMutableList().losslessUpdate(
-                iKuaiDomains,
-                accord = { t, t1 ->
-                    t.value == t1.value
-                },
-                adding = { t ->
-                    addAliyunRecord(t)
-                    logger.info("已更新 ${t.value} 于 Aliyun")
-                    false
-                },
-                removing = { t ->
-                    delAliyunRecord(t)
-                    logger.info("已删除 ${t.value} 于 Aliyun")
-                    false
-                },
-                keepers = { _, _ ->
-                    false
-                }
-            )
-
+    fun update() {
+        val router = kotlin.runCatching { Entourage.bindRouters.find { refreshEntourageName == it.name } }.onFailure { it.printStackTrace() }.getOrNull() ?: return logger.info("§c获取对应绑定 AC $refreshEntourageName 失败.")
+        val iKuaiDomains = router.lanWanSettings.getWan(refreshEntourageWanId, MixWan::class.java).adslWans.mapNotNull {
+            if (it.ip.isIpv4) Domain("@", "A", it.ip)
+            else null
         }
+        val aliyunDomains = getAliyunRecords().filter { it.rR == "@" }
+
+        aliyunDomains.toMutableList().losslessUpdate(
+            iKuaiDomains,
+            accord = { t, t1 ->
+                t.value == t1.value
+            },
+            adding = { t ->
+                addAliyunRecord(t)
+                logger.info("已更新 ${t.value} 于 Aliyun")
+                false
+            },
+            removing = { t ->
+                delAliyunRecord(t)
+                logger.info("已删除 ${t.value} 于 Aliyun")
+                false
+            },
+            keepers = { _, _ ->
+                false
+            }
+        )
     }
 }
