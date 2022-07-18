@@ -4,6 +4,9 @@ aliyun:
   domain-name: 'xxx.xxx'
   region-id: 'cn-hangzhou'
 
+# 需略 ip 个数
+ignore-count: 2
+
 # 刷新间隔 秒
 refresh-interval: 60
 

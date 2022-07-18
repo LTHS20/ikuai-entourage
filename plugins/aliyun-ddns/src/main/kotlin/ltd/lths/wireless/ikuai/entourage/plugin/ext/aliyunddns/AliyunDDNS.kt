@@ -30,9 +30,14 @@ object AliyunDDNS : EntouragePlugin("aliyun-ddns") {
     val domainName get() = config.getString("aliyun.domain-name", "xxx")!!
     val regionId get() = config.getString("aliyun.region-id", "cn-hangzhou")!!
 
+    val ignoreCount get() = config.getInt("ignore-count", 2)
+
     val refreshInterval get() = config.getLong("refresh-interval", 60)
     val refreshEntourageName get() = config.getString("refresh-entourage.name", "test")
     val refreshEntourageWanId get() = config.getInt("refresh-entourage.wan-id", 1)
+
+    var updatedDomains = mutableListOf<Domain>()
+    var ignoredDomains = mutableListOf<Domain>()
 
     override fun onEnable() {
         if (arrayOf(accessKeyId, secret, domainName).contains("xxx")) {
@@ -63,26 +68,36 @@ object AliyunDDNS : EntouragePlugin("aliyun-ddns") {
             if (it.ip.isIpv4) Domain("@", "A", it.ip)
             else null
         }
+        if (iKuaiDomains.size - ignoreCount < 1) {
+            logger.info("ip 数量少于 ${ignoreCount + 1}, 更新失败")
+            return
+        }
         val aliyunDomains = getAliyunRecords().filter { it.rR == "@" }
 
-        aliyunDomains.toMutableList().losslessUpdate(
-            iKuaiDomains,
-            accord = { t, t1 ->
-                t.value == t1.value
-            },
-            adding = { t ->
-                addAliyunRecord(t)
-                logger.info("已更新 ${t.value} 于 Aliyun")
-                false
-            },
-            removing = { t ->
-                delAliyunRecord(t)
-                logger.info("已删除 ${t.value} 于 Aliyun")
-                false
-            },
-            keepers = { _, _ ->
-                false
-            }
-        )
+        kotlin.runCatching {
+            aliyunDomains.toMutableList().losslessUpdate(
+                iKuaiDomains,
+                accord = { t, t1 ->
+                    t.value == t1.value
+                },
+                adding = { t ->
+                    addAliyunRecord(t)
+                    logger.info("已更新 ${t.value} 于 Aliyun")
+                    true
+                },
+                removing = { t ->
+                    delAliyunRecord(t)
+                    logger.info("已删除 ${t.value} 于 Aliyun")
+                    true
+                },
+                keepers = { _, _ ->
+                    true
+                }
+            )
+        }.onFailure {
+            logger.info("DDNS 刷新时遇到问题")
+            logger.info("ikuai list: ${iKuaiDomains.joinToString { it.value }}")
+            logger.info("aliyun list: ${aliyunDomains.joinToString { it.value }}")
+        }
     }
 }

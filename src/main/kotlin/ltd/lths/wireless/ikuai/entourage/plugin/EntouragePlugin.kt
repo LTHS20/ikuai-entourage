@@ -17,7 +17,7 @@ abstract class EntouragePlugin(val name: String) {
 
     lateinit var file: File
 
-    val logger = LogManager.getLogger(name)!!
+    val logger by lazy { PluginLogger.getLogger(this) }
     val dataFolder = File(PluginManager.pluginsDir, name)
     val jarFile by lazy { JarFile(file) }
 
@@ -36,7 +36,7 @@ abstract class EntouragePlugin(val name: String) {
             }
 
             config = Configuration.loadFromFile(configFile.also { logger.info(it.path) })
-            logger.info("插件 $name 的默认配置文件已载入")
+            logger.info("默认配置文件已载入")
         }
     }
 

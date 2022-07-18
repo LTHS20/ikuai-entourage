@@ -1,4 +1,4 @@
-package ltd.lths.wireless.ikuai.router.stream.ipport
+package ltd.lths.wireless.ikuai.router.divert.ipport
 
 /**
  * ikuai-entourage
@@ -7,5 +7,5 @@ package ltd.lths.wireless.ikuai.router.stream.ipport
  * @author Score2
  * @since 2022/06/29 23:33
  */
-class IpPortStream {
+class IpPortDivert {
 }
