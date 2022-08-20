@@ -1,0 +1,4 @@
+# 冗余线路
+backup-lines:
+  - 'wan1'
+  - 'wan2'

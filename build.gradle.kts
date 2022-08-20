@@ -3,7 +3,7 @@ val taboolibVersion: String by project
 plugins {
     java
     kotlin("jvm") version "1.6.10"
-    id("io.izzel.taboolib") version "1.40"
+    id("io.izzel.taboolib") version "1.42"
 }
 
 repositories {

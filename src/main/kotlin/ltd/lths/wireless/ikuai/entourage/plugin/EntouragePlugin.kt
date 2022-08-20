@@ -1,10 +1,10 @@
 package ltd.lths.wireless.ikuai.entourage.plugin
 
-import org.apache.logging.log4j.LogManager
 import taboolib.common.io.newFile
 import taboolib.module.configuration.Configuration
 import java.io.File
 import java.util.jar.JarFile
+import java.util.logging.LogManager
 
 /**
  * ikuai-entourage
@@ -17,7 +17,7 @@ abstract class EntouragePlugin(val name: String) {
 
     lateinit var file: File
 
-    val logger by lazy { PluginLogger.getLogger(this) }
+    val logger by lazy { LogManager.getLogManager().getLogger(name) }
     val dataFolder = File(PluginManager.pluginsDir, name)
     val jarFile by lazy { JarFile(file) }
 
