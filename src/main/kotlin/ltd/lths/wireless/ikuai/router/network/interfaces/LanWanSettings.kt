@@ -7,7 +7,7 @@ import ltd.lths.wireless.ikuai.entourage.util.ActionProp
 
 /**
  * ikuai-entourage
- * ltd.lths.wireless.ikuai.ac.network.`interface`.IkuaiLanWanSettings
+ * ltd.lths.wireless.ikuai.router.network.`interface`.IkuaiLanWanSettings
  *
  * @author Score2
  * @since 2022/06/08 17:46

@@ -23,7 +23,7 @@ tasks.withType<JavaCompile> {
 }
 
 tasks.shadowJar {
-    classifier = null
+    archiveClassifier.set(null as String?)
 }
 
 tasks.build {

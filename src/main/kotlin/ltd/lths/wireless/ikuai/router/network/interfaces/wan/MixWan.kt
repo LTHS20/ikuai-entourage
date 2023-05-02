@@ -11,12 +11,12 @@ import ltd.lths.wireless.ikuai.router.network.interfaces.wan.mix.MixIndividualWa
 
 /**
  * ikuai-entourage
- * ltd.lths.wireless.ikuai.ac.network.interfaces.wan.MixWan
+ * ltd.lths.wireless.ikuai.router.network.interfaces.wan.MixWan
  *
  * @author Score2
  * @since 2022/06/08 18:17
  */
-class MixWan(wanId: Int, ac: IkuaiRouter) : Wan(wanId, ac) {
+class MixWan(wanId: Int, router: IkuaiRouter) : Wan(wanId, router) {
 
     var assMulti: Int
         get() = json.get("ass_multi_total").asInt

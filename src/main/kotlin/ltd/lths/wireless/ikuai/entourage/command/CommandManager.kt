@@ -5,6 +5,7 @@ import ltd.lths.wireless.ikuai.entourage.console.EntourageConsole
 import taboolib.common.platform.Awake
 import taboolib.common.platform.ProxyCommandSender
 import taboolib.common.platform.command.*
+import taboolib.common.platform.command.component.CommandBase
 import taboolib.common.platform.service.PlatformCommand
 
 /**
@@ -69,7 +70,7 @@ class CommandManager : PlatformCommand {
         command: CommandStructure,
         executor: CommandExecutor,
         completer: CommandCompleter,
-        commandBuilder: CommandBuilder.CommandBase.() -> Unit
+        commandBuilder: CommandBase.() -> Unit
     ) {
         register(Command(command, executor, completer, commandBuilder))
     }

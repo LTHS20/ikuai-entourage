@@ -29,6 +29,7 @@ object AliyunDDNS : EntouragePlugin("aliyun-ddns") {
     val secret get() = config.getString("aliyun.secret", "xxx")!!
     val domainName get() = config.getString("aliyun.domain-name", "xxx")!!
     val regionId get() = config.getString("aliyun.region-id", "cn-hangzhou")!!
+    val domainHeader get() = config.getString("domain-header", "@")!!
 
     val ignoreCount get() = config.getInt("ignore-count", 2)
 
@@ -36,15 +37,13 @@ object AliyunDDNS : EntouragePlugin("aliyun-ddns") {
     val refreshEntourageName get() = config.getString("refresh-entourage.name", "test")
     val refreshEntourageWanId get() = config.getInt("refresh-entourage.wan-id", 1)
 
-    var updatedDomains = mutableListOf<Domain>()
-    var ignoredDomains = mutableListOf<Domain>()
 
     override fun onEnable() {
         if (arrayOf(accessKeyId, secret, domainName).contains("xxx")) {
             logger.info("§c请根据配置文件内容完成填写后输入 /pl $name reload 来启用该插件的功能.")
             return
         }
-        logger.info("开始刷新, 间隔 $refreshInterval 秒, 将针对 ac $refreshEntourageName 进行刷新")
+        logger.info("开始刷新, 间隔 $refreshInterval 秒, 将针对 router $refreshEntourageName 进行刷新")
         Thread {
             while (true) {
                 kotlin.runCatching {
@@ -63,16 +62,16 @@ object AliyunDDNS : EntouragePlugin("aliyun-ddns") {
     }
 
     fun update() {
-        val router = kotlin.runCatching { Entourage.bindRouters.find { refreshEntourageName == it.name } }.onFailure { it.printStackTrace() }.getOrNull() ?: return logger.info("§c获取对应绑定 AC $refreshEntourageName 失败.")
+        val router = kotlin.runCatching { Entourage.bindRouters.find { refreshEntourageName == it.name } }.onFailure { it.printStackTrace() }.getOrNull() ?: return logger.info("§c获取对应绑定 router $refreshEntourageName 失败.")
         val iKuaiDomains = router.lanWanSettings.getWan(refreshEntourageWanId, MixWan::class.java).adslWans.mapNotNull {
-            if (it.ip.isIpv4) Domain("@", "A", it.ip)
+            if (it.ip.isIpv4) Domain(domainHeader, "A", it.ip)
             else null
         }
         if (iKuaiDomains.size - ignoreCount < 1) {
             logger.info("ip 数量少于 ${ignoreCount + 1}, 更新失败")
             return
         }
-        val aliyunDomains = getAliyunRecords().filter { it.rR == "@" }
+        val aliyunDomains = getAliyunRecords().filter { it.rR == domainHeader }
 
         kotlin.runCatching {
             aliyunDomains.toMutableList().losslessUpdate(

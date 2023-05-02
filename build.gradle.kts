@@ -2,8 +2,8 @@ val taboolibVersion: String by project
 
 plugins {
     java
-    kotlin("jvm") version "1.6.10"
-    id("io.izzel.taboolib") version "1.42"
+    kotlin("jvm") version "1.8.21"
+    id("io.izzel.taboolib") version "1.56"
 }
 
 repositories {
@@ -29,6 +29,13 @@ taboolib {
     version = taboolibVersion
 }
 
+/*subprojects {
+    configure<JavaPluginExtension> {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+}*/
+
 dependencies {
     taboo(kotlin("stdlib"))
 
@@ -38,6 +45,7 @@ dependencies {
     taboo("org.apache.httpcomponents:httpclient:4.5.13")
     taboo("org.apache.logging.log4j:log4j-api:2.17.2")
     taboo("org.apache.logging.log4j:log4j-core:2.17.2")
+    taboo("org.apache.logging.log4j:log4j-iostreams:2.17.2")
     taboo("org.apache.logging.log4j:log4j-slf4j18-impl:2.17.2")
 
     taboo("com.google.code.gson:gson:2.9.0")
@@ -57,10 +65,7 @@ tasks.withType<Jar> {
     }
 }
 
-configure<JavaPluginExtension> {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
+
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"

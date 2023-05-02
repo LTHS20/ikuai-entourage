@@ -1,9 +1,9 @@
 package ltd.lths.wireless.ikuai.entourage.command
 
-import taboolib.common.platform.command.CommandBuilder
 import taboolib.common.platform.command.CommandCompleter
 import taboolib.common.platform.command.CommandExecutor
 import taboolib.common.platform.command.CommandStructure
+import taboolib.common.platform.command.component.CommandBase
 
 /**
  * ikuai-entourage
@@ -16,7 +16,7 @@ data class Command(
     val command: CommandStructure,
     val executor: CommandExecutor,
     val completer: CommandCompleter,
-    val commandBuilder: CommandBuilder.CommandBase.() -> Unit
+    val commandBuilder: CommandBase.() -> Unit
 ) {
 
     val aliases get() = listOf(command.name, *command.aliases.toTypedArray())

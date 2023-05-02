@@ -4,13 +4,16 @@ aliyun:
   domain-name: 'xxx.xxx'
   region-id: 'cn-hangzhou'
 
+# 记录名称
+domain-header: '@'
+
 # 需略 ip 个数
 ignore-count: 2
 
 # 刷新间隔 秒
 refresh-interval: 60
 
-# 仅对以下名称的 ac 实施刷新
+# 仅对以下名称的 router 实施刷新
 refresh-entourage:
   name: test
   wan-id: 1

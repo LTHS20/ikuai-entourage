@@ -4,7 +4,7 @@ import com.google.gson.JsonObject
 
 /**
  * ikuai-entourage
- * ltd.lths.wireless.ikuai.ac.network.interfaces.wan.AdslWan
+ * ltd.lths.wireless.ikuai.router.network.interfaces.wan.AdslWan
  *
  * @author Score2
  * @since 2022/06/10 23:58

@@ -30,11 +30,11 @@ class ActionProp(val funcName: String, val action: String, val param: JsonObject
         }
     )
 
-    fun post(ac: IkuaiRouter) =
-        ac.post(this)
+    fun post(router: IkuaiRouter) =
+        router.post(this)
 
-    fun postJson(ac: IkuaiRouter, action: IkuaiRouter.PostAction = IkuaiRouter.PostAction.CALL) =
-        ac.postJson(action, this)
+    fun postJson(router: IkuaiRouter, action: IkuaiRouter.PostAction = IkuaiRouter.PostAction.CALL) =
+        router.postJson(action, this)
 
     fun toJson(): JsonObject {
         return JsonObject().run {

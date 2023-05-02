@@ -6,14 +6,14 @@ import ltd.lths.wireless.ikuai.router.network.interfaces.wan.DynamicWan
 
 /**
  * ikuai-entourage
- * ltd.lths.wireless.ikuai.ac.network.interfaces.wan.mix.MixDenamicWan
+ * ltd.lths.wireless.ikuai.router.network.interfaces.wan.mix.MixDenamicWan
  *
  * @author Score2
  * @since 2022/06/08 20:38
  */
 class MixDynamicWan(
     wanId: Int,
-    ac: IkuaiRouter,
+    router: IkuaiRouter,
     override var json: JsonObject
 ) : MixIndividualWan, DynamicWan {
 

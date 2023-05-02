@@ -1,13 +1,15 @@
 package ltd.lths.wireless.ikuai.entourage
 
 import joptsimple.OptionSet
-import ltd.lths.wireless.ikuai.router.IkuaiRouter
 import ltd.lths.wireless.ikuai.entourage.api.losslessUpdate
 import ltd.lths.wireless.ikuai.entourage.api.println
 import ltd.lths.wireless.ikuai.entourage.command.CommandManager
 import ltd.lths.wireless.ikuai.entourage.console.EntourageConsole
 import ltd.lths.wireless.ikuai.entourage.plugin.PluginManager
+import ltd.lths.wireless.ikuai.router.IkuaiRouter
+import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.io.IoBuilder
 import taboolib.common.TabooLibCommon
 import taboolib.common.platform.ProxyCommandSender
 import taboolib.common.platform.command.command
@@ -17,7 +19,7 @@ import kotlin.system.exitProcess
 
 /**
  * iKuai-multiwan-tasks
- * ltd.lths.wireless.ikuai.ac.Main
+ * ltd.lths.wireless.ikuai.router.Main
  *
  * @author Score2
  * @since 2022/05/02 15:40
@@ -49,6 +51,11 @@ object Entourage {
             onDisable()
         })
 
+        System.setOut(IoBuilder.forLogger(logger).setLevel(Level.INFO).buildPrintStream())
+        System.setErr(IoBuilder.forLogger(logger).setLevel(Level.WARN).buildPrintStream())
+
+        println("§3LOGGER 已初始化")
+
         logger.info("正在载入配置文件...")
         config.onReload {
             onReload()
@@ -56,7 +63,7 @@ object Entourage {
 
 
         logger.info("正在载入iKuaiRouter...")
-        loadIkuaiACs()
+        loadRouters()
 
         logger.info("正在载入内部命令...")
         command("help", aliases = listOf("?"), description = "查看帮助信息") {
@@ -77,7 +84,7 @@ object Entourage {
                 onReload()
             }
         }
-        command("ikuai", aliases = listOf("entourage", "ac"), description = "ikuai 相关的命令") {
+        command("ikuai", aliases = listOf("entourage", "router"), description = "ikuai 相关的命令") {
 
             dynamic {
                 suggestion<ProxyCommandSender> { sender, context ->
@@ -87,8 +94,8 @@ object Entourage {
                 literal("ethernet", "ethernets") {
                     dynamic {
                         suggestion<ProxyCommandSender> { sender, context ->
-                            val ac = bindRouters.find { it.name == context.argument(-2) }!!
-                            ac.lanWanSettings.ethernets.map { it.name }
+                            val router = bindRouters.find { it.name == context.argument(-2) }!!
+                            router.lanWanSettings.ethernets.map { it.name }
                         }
                     }
                 }
@@ -145,34 +152,34 @@ object Entourage {
     }
 
     fun onReload() {
-        loadIkuaiACs()
+        loadRouters()
     }
 
-    fun loadIkuaiACs() {
+    fun loadRouters() {
         config.getConfigurationSection("ikuai-router")!!.let { section ->
             bindRouters.losslessUpdate(
                 section.getKeys(false).map {
-                    val ac = IkuaiRouter(it, section.getConfigurationSection(it)!!)
-                    ac
+                    val router = IkuaiRouter(it, section.getConfigurationSection(it)!!)
+                    router
                 },
                 accord = { t, t1 ->
                     t.name == t1.name
                 },
                 adding = { t ->
                     if (t.cookie == "password") {
-                        logger.info("§ciKuaiAC ${t.name} 的密码错误, Host: ${t.ip}:${t.port}, User: ${t.username}")
+                        logger.info("§ciKuaiRouter ${t.name} 的密码错误, Host: ${t.ip}:${t.port}, User: ${t.username}")
                         return@losslessUpdate false
                     }
-                    logger.info("已载入新 iKuaiAC ${t.name}, Host: ${t.ip}:${t.port}, User: ${t.username}")
+                    logger.info("已载入新 iKuaiRouter ${t.name}, Host: ${t.ip}:${t.port}, User: ${t.username}")
                     true
                 },
                 removing = { t ->
-                    logger.info("已删除 iKuaiAC ${t.name}, Host: ${t.ip}:${t.port}")
+                    logger.info("已删除 iKuaiRouter ${t.name}, Host: ${t.ip}:${t.port}")
                     true
                 },
                 keepers = { t, t1 ->
                     if (t.cookie == "password") {
-                        logger.info("§ciKuaiAC ${t.name} 的密码错误, Host: ${t.ip}:${t.port}, User: ${t.username}")
+                        logger.info("§ciKuaiRouter ${t.name} 的密码错误, Host: ${t.ip}:${t.port}, User: ${t.username}")
                         return@losslessUpdate false
                     }
                     t.ip = t1.ip
@@ -180,7 +187,7 @@ object Entourage {
                     t.username = t1.username
                     t.password = t1.password
                     t.httpType = t1.httpType
-                    logger.info("已修改原 iKuaiAC ${t.name} 的信息, Host: ${t.ip}:${t.port}, User: ${t.username}")
+                    logger.info("已修改原 iKuaiRouter ${t.name} 的信息, Host: ${t.ip}:${t.port}, User: ${t.username}")
                     true
                 }
             )
@@ -190,12 +197,12 @@ object Entourage {
 
     fun test() {
         logger.info("开始调试")
-        val ac = IkuaiRouter("test1", "172.18.0.1", "test", "lthstester123")
+        val router = IkuaiRouter("test1", "172.18.0.1", "test", "lthstester123")
 
-        /*ac.lanWanSettings.getWan(1, MixWan::class.java).AdslWans.forEach {
+        /*router.lanWanSettings.getWan(1, MixWan::class.java).AdslWans.forEach {
             "${it.vlanId}:${it.vlanName}:${it.ip}:${it.username}:${it.password}".println()
         }*/
-        ac.lanWanSettings.ethernets.forEach {
+        router.lanWanSettings.ethernets.forEach {
             it.name.println()
         }
 

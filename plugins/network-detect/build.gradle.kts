@@ -1,3 +1,5 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
     kotlin("jvm")
     id("com.github.johnrengelman.shadow") version "7.0.0"
@@ -23,7 +25,7 @@ tasks.withType<JavaCompile> {
 }
 
 tasks.shadowJar {
-    classifier = null
+    archiveClassifier.set(null as String?)
 }
 
 tasks.build {

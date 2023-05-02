@@ -7,7 +7,7 @@ import ltd.lths.wireless.ikuai.entourage.util.ActionProp
 
 /**
  * ikuai-entourage
- * ltd.lths.wireless.ikuai.ac.network.`interface`.wan.Wan
+ * ltd.lths.wireless.ikuai.router.network.`interface`.wan.Wan
  *
  * @author Score2
  * @since 2022/06/08 17:47
@@ -19,7 +19,7 @@ abstract class Wan(val wanId: Int, val router: IkuaiRouter) {
     val interfaceName: String
         get() = "wan$wanId"
 
-    var isDefaultGateway: Boolean
+    var isDefaultRouter: Boolean
         get() = json.get("default_route").asNumBool
         set(value) = json.addProperty("default_route", value.asNumSign)
 

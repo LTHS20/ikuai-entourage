@@ -7,7 +7,7 @@ import ltd.lths.wireless.ikuai.router.network.interfaces.wan.WanInterface
 
 /**
  * ikuai-entourage
- * ltd.lths.wireless.ikuai.ac.network.interfaces.wan.mix.MixWanIndividual
+ * ltd.lths.wireless.ikuai.router.network.interfaces.wan.mix.MixWanIndividual
  *
  * @author Score2
  * @since 2022/06/10 23:26

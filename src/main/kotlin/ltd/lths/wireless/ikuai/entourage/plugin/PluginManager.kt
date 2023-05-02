@@ -47,7 +47,7 @@ object PluginManager {
         dirs.forEach {
             it.println()
         }*/
-        ClassAppender.addPath(file.toPath())
+        ClassAppender.addPath(file.toPath(), false, false)
         val jarFile = JarFile(file)
         kotlin.runCatching {
             jarFile.entries().iterator().forEach {

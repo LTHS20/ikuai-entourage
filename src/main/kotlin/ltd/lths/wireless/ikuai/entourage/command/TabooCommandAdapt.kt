@@ -1,10 +1,10 @@
 package ltd.lths.wireless.ikuai.entourage.command
 
 import taboolib.common.platform.ProxyCommandSender
-import taboolib.common.platform.command.CommandBuilder
 import taboolib.common.platform.command.CommandCompleter
 import taboolib.common.platform.command.CommandExecutor
 import taboolib.common.platform.command.CommandStructure
+import taboolib.common.platform.command.component.CommandBase
 import taboolib.common.platform.service.PlatformCommand
 
 /**
@@ -20,7 +20,7 @@ class TabooCommandAdapt : PlatformCommand {
         command: CommandStructure,
         executor: CommandExecutor,
         completer: CommandCompleter,
-        commandBuilder: CommandBuilder.CommandBase.() -> Unit
+        commandBuilder: CommandBase.() -> Unit
     ) {
         TODO("Not yet implemented")
     }
